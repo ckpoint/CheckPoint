@@ -65,6 +65,10 @@ public interface MsgSettingService {
      * @param models the models
      */
     void deleteValidationData(List<ValidationData> models);
+
+    /**
+     * Delete all.
+     */
     void deleteAll();
 
     /**

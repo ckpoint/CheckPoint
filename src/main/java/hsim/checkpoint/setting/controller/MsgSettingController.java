@@ -64,6 +64,7 @@ public class MsgSettingController {
         this.validationSessionComponent.sessionCheck(req);
         this.msgSaver.annotationScan(maxdeeplevel);
     }
+
     /**
      * Download api json all.
      *
@@ -198,7 +199,7 @@ public class MsgSettingController {
     /**
      * Delete validation url.
      *
-     * @param req    the req
+     * @param req the req
      */
     @DeleteMapping("/setting/delete/all")
     public void cleanValidationDatas(HttpServletRequest req) {

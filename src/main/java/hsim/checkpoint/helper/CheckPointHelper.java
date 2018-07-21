@@ -31,7 +31,7 @@ public class CheckPointHelper {
     /**
      * Replace the mapper to be used for message parsing.
      *
-     * @param objectMapper  jackson objectmapper
+     * @param objectMapper jackson objectmapper
      * @return CheckPointHelper check point helper
      */
     public CheckPointHelper replaceObjectMapper(ObjectMapper objectMapper) {
@@ -42,8 +42,8 @@ public class CheckPointHelper {
     /**
      * Replace the callback to be used basic exception.
      *
-     * @param checkRule  basic rule type ex,, BasicCheckRule.Mandatory
-     * @param cb         callback class with implement ValidationInvalidCallback
+     * @param checkRule basic rule type ex,, BasicCheckRule.Mandatory
+     * @param cb        callback class with implement ValidationInvalidCallback
      * @return CheckPointHeler check point helper
      */
     public CheckPointHelper replaceExceptionCallback(BasicCheckRule checkRule, ValidationInvalidCallback cb) {
@@ -54,10 +54,10 @@ public class CheckPointHelper {
     /**
      * Add the fresh user rule
      *
-     * @param ruleName           use rule name - must uniqueue
-     * @param standardValueType  rule check standardvalue type
-     * @param validationCheck    rule check class with extends BaseValidationCheck and overide replace or check method and exception method
-     * @param assistType         input field type
+     * @param ruleName          use rule name - must uniqueue
+     * @param standardValueType rule check standardvalue type
+     * @param validationCheck   rule check class with extends BaseValidationCheck and overide replace or check method and exception method
+     * @param assistType        input field type
      * @return CheckPointHelper check point helper
      */
     public CheckPointHelper addValidationRule(String ruleName, StandardValueType standardValueType, BaseValidationCheck validationCheck, AssistType assistType) {

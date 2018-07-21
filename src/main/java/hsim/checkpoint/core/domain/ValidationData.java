@@ -242,6 +242,11 @@ public class ValidationData {
         return this.paramType.equals(ParamType.BODY);
     }
 
+    /**
+     * Minimalize validation data.
+     *
+     * @return the validation data
+     */
     public ValidationData minimalize() {
         ValidationData minimum = ValidationObjUtil.objectDeepCopyWithBlackList(this, ValidationData.class, "parent", "validaitonRule");
         minimum.setValidationRules(this.validationRules.stream().filter(vr -> vr.isUse()).collect(Collectors.toList()));
@@ -254,6 +259,12 @@ public class ValidationData {
         return this.tempRules.stream().filter(rule -> r.getRuleName().equals(rule.getRuleName())).findFirst().orElse(null);
     }
 
+    /**
+     * Rule sync validation data.
+     *
+     * @param rules the rules
+     * @return the validation data
+     */
     public ValidationData ruleSync(List<ValidationRule> rules) {
         List<ValidationRule> ruleList = new ArrayList<>();
 
