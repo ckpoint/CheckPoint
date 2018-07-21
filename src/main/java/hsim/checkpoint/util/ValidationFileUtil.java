@@ -6,17 +6,64 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 
 import javax.servlet.http.HttpServletResponse;
-import java.io.File;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 import java.net.URLEncoder;
+import java.nio.charset.Charset;
 import java.nio.file.Files;
+import java.nio.file.StandardOpenOption;
 
 /**
  * The type Validation file util.
  */
 @Slf4j
 public class ValidationFileUtil {
+
+
+    private static BufferedReader getBufferReader(final File file, final Charset charset) throws IOException {
+        if (!file.exists() || file.isDirectory() || !file.canRead()) {
+            throw new IOException("file status not normal : " + file.getName());
+        }
+        return Files.newBufferedReader(file.toPath(), charset);
+    }
+
+    /**
+     * Read file to string string.
+     *
+     * @param file    the file
+     * @param charset the charset
+     * @return the string
+     * @throws IOException the io exception
+     */
+    public static String readFileToString(File file, final Charset charset) throws IOException {
+        String line = null;
+        BufferedReader reader = getBufferReader(file, charset);
+        StringBuffer strBuffer = new StringBuffer();
+
+        while ((line = reader.readLine()) != null) {
+            strBuffer.append(line);
+        }
+        return strBuffer.toString();
+    }
+
+
+    private static OutputStream getOutputStream(final File file) throws IOException {
+        if(!file.getParentFile().exists()) {
+            Files.createDirectory(file.getParentFile().toPath());
+        }
+        return Files.newOutputStream(file.toPath(), StandardOpenOption.CREATE, StandardOpenOption.WRITE);
+    }
+
+    /**
+     * Write string to file.
+     *
+     * @param file    the file
+     * @param content the content
+     * @throws IOException the io exception
+     */
+    public static void writeStringToFile(File file, String content) throws IOException {
+        OutputStream outputStream = getOutputStream(file);
+        outputStream.write(content.getBytes());
+    }
 
     /**
      * Gets encoding file name.

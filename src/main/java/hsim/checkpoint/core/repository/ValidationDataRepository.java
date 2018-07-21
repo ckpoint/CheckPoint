@@ -8,7 +8,7 @@ import hsim.checkpoint.core.domain.ValidationData;
 import hsim.checkpoint.core.store.ValidationRuleStore;
 import hsim.checkpoint.exception.ValidationLibException;
 import hsim.checkpoint.type.ParamType;
-import hsim.checkpoint.util.FileUtil;
+import hsim.checkpoint.util.ValidationFileUtil;
 import hsim.checkpoint.util.ValidationObjUtil;
 import org.springframework.http.HttpStatus;
 
@@ -39,7 +39,8 @@ public class ValidationDataRepository {
     /**
      * Instantiates a new Validation data repository.
      */
-    public ValidationDataRepository() { }
+    public ValidationDataRepository() {
+    }
 
     private void urlMapInit() {
         this.urlMap = new HashMap<>();
@@ -118,7 +119,7 @@ public class ValidationDataRepository {
 
         List<ValidationData> list = null;
         try {
-            String jsonStr = FileUtil.readFileToString(new File(this.filePath), Charset.forName("UTF-8"));
+            String jsonStr = ValidationFileUtil.readFileToString(new File(this.filePath), Charset.forName("UTF-8"));
             list = objectMapper.readValue(jsonStr, objectMapper.getTypeFactory().constructCollectionType(List.class, ValidationData.class));
         } catch (IOException e) {
             list = new ArrayList<>();
@@ -133,7 +134,7 @@ public class ValidationDataRepository {
         return list;
     }
 
-    public void datasRuleSync(){
+    public void datasRuleSync() {
         this.datas.forEach(vd -> vd.ruleSync(this.validationRuleStore.getRules()));
     }
 
@@ -296,7 +297,7 @@ public class ValidationDataRepository {
         try {
             String jsonStr = this.objectMapper.writeValueAsString(minimumList);
             try {
-                FileUtil.writeStringToFile(new File(this.filePath), jsonStr);
+                ValidationFileUtil.writeStringToFile(new File(this.filePath), jsonStr);
             } catch (IOException e) {
                 throw new ValidationLibException("file write error", HttpStatus.INTERNAL_SERVER_ERROR);
             }
