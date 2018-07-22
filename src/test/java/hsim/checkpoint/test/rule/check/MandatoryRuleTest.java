@@ -6,8 +6,8 @@ import hsim.checkpoint.core.component.validationRule.type.BasicCheckRule;
 import hsim.checkpoint.core.domain.ValidationData;
 import hsim.checkpoint.exception.ValidationLibException;
 import hsim.checkpoint.helper.CheckPointHelper;
+import hsim.checkpoint.model.user.UserModel;
 import hsim.checkpoint.test.rule.RuleTestUtil;
-import hsim.model.CommonReqModel;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
@@ -17,7 +17,7 @@ import org.springframework.http.HttpStatus;
 public class MandatoryRuleTest {
 
     private RuleTestUtil ruleTestUtil = new RuleTestUtil();
-    private CommonReqModel obj = new CommonReqModel();
+    private UserModel obj = new UserModel();
     private ValidationData data = ruleTestUtil.getDefaultValidationData();
     private BasicCheckRule checkType = BasicCheckRule.Mandatory;
 
@@ -58,7 +58,7 @@ public class MandatoryRuleTest {
         helper.replaceExceptionCallback(this.checkType, new MandatoryCallback());
 
         obj.setLoginId(null);
-        ruleTestUtil.checkRule(data, obj, checkType, obj.getSize(), false, HttpStatus.NO_CONTENT);
+        ruleTestUtil.checkRule(data, obj, checkType, obj.getLoginId(), false, HttpStatus.NO_CONTENT);
     }
 
     public static class MandatoryCallback implements ValidationInvalidCallback {

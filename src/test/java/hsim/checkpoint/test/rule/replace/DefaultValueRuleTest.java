@@ -3,8 +3,8 @@ package hsim.checkpoint.test.rule.replace;
 import hsim.checkpoint.core.component.validationRule.rule.ValidationRule;
 import hsim.checkpoint.core.component.validationRule.type.BasicCheckRule;
 import hsim.checkpoint.core.domain.ValidationData;
+import hsim.checkpoint.model.user.UserModel;
 import hsim.checkpoint.test.rule.RuleTestUtil;
-import hsim.model.CommonReqModel;
 import org.junit.Assert;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
@@ -14,12 +14,12 @@ import org.junit.runners.MethodSorters;
 public class DefaultValueRuleTest {
 
     private RuleTestUtil ruleTestUtil = new RuleTestUtil();
-    private CommonReqModel obj = new CommonReqModel();
+    private UserModel obj = new UserModel();
     private ValidationData data = ruleTestUtil.getDefaultValidationData();
     private BasicCheckRule checkType = BasicCheckRule.DefaultValue;
 
     public DefaultValueRuleTest() {
-        this.data.setName("name");
+        this.data.setName("nickName");
         this.data.setTypeClass(String.class);
 
         ValidationRule rule = data.getValidationRules().stream().filter(r -> r.getRuleName().equals(checkType.name())).findAny().get();
@@ -30,30 +30,30 @@ public class DefaultValueRuleTest {
 
     @Test
     public void test_fail_1() {
-        obj.setName("");
+        obj.setNickName("");
         ruleTestUtil.getMsgChecker().checkDataInnerRules(this.data, this.obj);
-        Assert.assertEquals(obj.getName(), "guest");
+        Assert.assertEquals(obj.getNickName(), "guest");
     }
 
     @Test
     public void test_fail_2() {
-        obj.setName(null);
+        obj.setNickName(null);
         ruleTestUtil.getMsgChecker().checkDataInnerRules(this.data, this.obj);
-        Assert.assertEquals(obj.getName(), "guest");
+        Assert.assertEquals(obj.getNickName(), "guest");
     }
 
     @Test
     public void test_success_1() {
-        obj.setName("hsim");
+        obj.setNickName("hsim");
         ruleTestUtil.getMsgChecker().checkDataInnerRules(this.data, this.obj);
-        Assert.assertEquals(obj.getName(), "hsim");
+        Assert.assertEquals(obj.getNickName(), "hsim");
     }
 
     @Test
     public void test_success_2() {
-        obj.setName("taeon");
+        obj.setNickName("taeon");
         ruleTestUtil.getMsgChecker().checkDataInnerRules(this.data, this.obj);
-        Assert.assertEquals(obj.getName(), "taeon");
+        Assert.assertEquals(obj.getNickName(), "taeon");
     }
 
 }

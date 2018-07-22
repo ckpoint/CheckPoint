@@ -6,56 +6,60 @@ import hsim.checkpoint.core.component.validationRule.type.BasicCheckRule;
 import hsim.checkpoint.core.domain.ValidationData;
 import hsim.checkpoint.exception.ValidationLibException;
 import hsim.checkpoint.helper.CheckPointHelper;
+import hsim.checkpoint.model.user.UserModel;
+import hsim.checkpoint.model.user.type.Membership;
 import hsim.checkpoint.test.rule.RuleTestUtil;
-import hsim.model.CommonReqModel;
-import org.apache.poi.util.ArrayUtil;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
-import org.mockito.internal.util.collections.ListUtil;
 import org.springframework.http.HttpStatus;
 
 import java.util.Arrays;
-import java.util.stream.Collectors;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class WhiteListCheck {
 
     private RuleTestUtil ruleTestUtil = new RuleTestUtil();
-    private CommonReqModel obj = new CommonReqModel();
+    private UserModel obj = new UserModel();
     private ValidationData data = ruleTestUtil.getDefaultValidationData();
     private BasicCheckRule checkType = BasicCheckRule.WhiteList;
 
     public WhiteListCheck() {
-        this.data.setName("name");
+        this.data.setName("membership");
 
         ValidationRule rule = data.getValidationRules().stream().filter(r -> r.getRuleName().equals(checkType.name())).findAny().get();
         rule.setUse(true);
-        rule.setStandardValue(Arrays.asList(new String[]{"hsim", "taeon", "ayoung", "miho"}));
+        rule.setStandardValue(Arrays.asList(new String[]{"GOLD", "SILVER", "BRONZE"}));
     }
 
     @Test
     public void test_fail_1() {
-        obj.setName("hsim.");
-        ruleTestUtil.checkRule(data, obj, checkType, obj.getName(), false);
+        obj.setMembership(Membership.BLACK);
+        ruleTestUtil.checkRule(data, obj, checkType, obj.getMembership(), false);
     }
 
     @Test
     public void test_fail_2() {
-        obj.setName(".taeon");
-        ruleTestUtil.checkRule(data, obj, checkType, obj.getName(), false);
+        obj.setMembership(Membership.DORMANCY);
+        ruleTestUtil.checkRule(data, obj, checkType, obj.getMembership(), false);
     }
 
     @Test
     public void test_success_1() {
-        obj.setName("hsim");
-        ruleTestUtil.checkRule(data, obj, checkType, obj.getName(), true);
+        obj.setMembership(Membership.GOLD);
+        ruleTestUtil.checkRule(data, obj, checkType, obj.getMembership(), true);
     }
 
     @Test
     public void test_success_2() {
-        obj.setName("ayoung");
-        ruleTestUtil.checkRule(data, obj, checkType, obj.getName(), true);
+        obj.setMembership(Membership.SILVER);
+        ruleTestUtil.checkRule(data, obj, checkType, obj.getMembership(), true);
+    }
+
+    @Test
+    public void test_success_3() {
+        obj.setMembership(Membership.BRONZE);
+        ruleTestUtil.checkRule(data, obj, checkType, obj.getMembership(), true);
     }
 
     @Test
@@ -63,8 +67,8 @@ public class WhiteListCheck {
         CheckPointHelper helper = new CheckPointHelper();
         helper.replaceExceptionCallback(this.checkType, new WhiteListCallback());
 
-        obj.setName(".ayoung");
-        ruleTestUtil.checkRule(data, obj, checkType, obj.getName(), false, HttpStatus.NOT_ACCEPTABLE);
+        obj.setMembership(Membership.BLACK);
+        ruleTestUtil.checkRule(data, obj, checkType, obj.getMembership(), false, HttpStatus.NOT_ACCEPTABLE);
     }
 
     public static class WhiteListCallback implements ValidationInvalidCallback {

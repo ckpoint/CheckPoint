@@ -6,8 +6,8 @@ import hsim.checkpoint.core.component.validationRule.type.BasicCheckRule;
 import hsim.checkpoint.core.domain.ValidationData;
 import hsim.checkpoint.exception.ValidationLibException;
 import hsim.checkpoint.helper.CheckPointHelper;
+import hsim.checkpoint.model.user.UserModel;
 import hsim.checkpoint.test.rule.RuleTestUtil;
-import hsim.model.CommonReqModel;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
@@ -17,11 +17,11 @@ import org.springframework.http.HttpStatus;
 public class PatternRuleTest {
 
     private RuleTestUtil ruleTestUtil = new RuleTestUtil();
-    private CommonReqModel obj = new CommonReqModel();
+    private UserModel obj = new UserModel();
     private ValidationData data = ruleTestUtil.getDefaultValidationData();
     private BasicCheckRule checkType = BasicCheckRule.Pattern;
 
-    public PatternRuleTest(){
+    public PatternRuleTest() {
         this.data.setName("email");
 
         ValidationRule rule = data.getValidationRules().stream().filter(r -> r.getRuleName().equals(checkType.name())).findAny().get();
@@ -32,25 +32,25 @@ public class PatternRuleTest {
     @Test
     public void test_fail_1() {
         obj.setEmail("hsim@checkpoint.com.");
-        ruleTestUtil.checkRule(data, obj, checkType, obj.getSize(), false);
+        ruleTestUtil.checkRule(data, obj, checkType, obj.getEmail(), false);
     }
 
     @Test
     public void test_fail_2() {
         obj.setEmail("taeon@checkpoint.");
-        ruleTestUtil.checkRule(data, obj, checkType, obj.getSize(), false);
+        ruleTestUtil.checkRule(data, obj, checkType, obj.getEmail(), false);
     }
 
     @Test
     public void test_success_1() {
         obj.setEmail("hsim@checkpoint.com");
-        ruleTestUtil.checkRule(data, obj, checkType, obj.getSize(), true);
+        ruleTestUtil.checkRule(data, obj, checkType, obj.getEmail(), true);
     }
 
     @Test
     public void test_success_2() {
         obj.setEmail("taeon@checkpoint.com");
-        ruleTestUtil.checkRule(data, obj, checkType, obj.getSize(), true);
+        ruleTestUtil.checkRule(data, obj, checkType, obj.getEmail(), true);
     }
 
     @Test
@@ -59,13 +59,13 @@ public class PatternRuleTest {
         helper.replaceExceptionCallback(this.checkType, new PatternCallback());
 
         obj.setEmail("taeon");
-        ruleTestUtil.checkRule(data, obj, checkType, obj.getSize(), false, HttpStatus.NOT_ACCEPTABLE);
+        ruleTestUtil.checkRule(data, obj, checkType, obj.getEmail(), false, HttpStatus.NOT_ACCEPTABLE);
     }
 
     public static class PatternCallback implements ValidationInvalidCallback {
         @Override
         public void exception(ValidationData param, Object inputValue, Object standardValue) {
-            throw  new ValidationLibException(param.getName() +" test exception", HttpStatus.NOT_ACCEPTABLE);
+            throw new ValidationLibException(param.getName() + " test exception", HttpStatus.NOT_ACCEPTABLE);
         }
     }
 

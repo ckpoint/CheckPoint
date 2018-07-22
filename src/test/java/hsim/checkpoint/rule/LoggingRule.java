@@ -1,4 +1,4 @@
-package hsim.model;
+package hsim.checkpoint.rule;
 
 import hsim.checkpoint.core.component.validationRule.type.BaseValidationCheck;
 import hsim.checkpoint.core.domain.ValidationData;
@@ -7,12 +7,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 
 @Slf4j
-public class TestRule implements BaseValidationCheck {
-
+public class LoggingRule implements BaseValidationCheck {
 
     @Override
     public boolean check(Object value, Object standardValue) {
-        log.info("check test rule : "+  value + ", "+ standardValue);
+        log.info("input : " + value + ", standard : " + standardValue);
         return true;
     }
 
@@ -23,7 +22,7 @@ public class TestRule implements BaseValidationCheck {
 
     @Override
     public void exception(ValidationData param, Object inputValue, Object standardValue) {
-        throw new ValidationLibException("testrule", HttpStatus.BAD_REQUEST);
+        throw new ValidationLibException("logging", HttpStatus.BAD_REQUEST);
     }
 
 }

@@ -3,8 +3,8 @@ package hsim.checkpoint.test.rule.replace;
 import hsim.checkpoint.core.component.validationRule.rule.ValidationRule;
 import hsim.checkpoint.core.component.validationRule.type.BasicCheckRule;
 import hsim.checkpoint.core.domain.ValidationData;
+import hsim.checkpoint.model.user.UserModel;
 import hsim.checkpoint.test.rule.RuleTestUtil;
-import hsim.model.CommonReqModel;
 import org.junit.Assert;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
@@ -16,12 +16,12 @@ import java.util.Base64;
 public class Base64RuleTest {
 
     private RuleTestUtil ruleTestUtil = new RuleTestUtil();
-    private CommonReqModel obj = new CommonReqModel();
+    private UserModel obj = new UserModel();
     private ValidationData data = ruleTestUtil.getDefaultValidationData();
     private BasicCheckRule checkType = BasicCheckRule.Base64;
 
     public Base64RuleTest() {
-        this.data.setName("domain");
+        this.data.setName("email");
         this.data.setTypeClass(String.class);
 
         ValidationRule rule = data.getValidationRules().stream().filter(r -> r.getRuleName().equals(checkType.name())).findAny().get();
@@ -31,27 +31,27 @@ public class Base64RuleTest {
     @Test
     public void test_fail_1() {
         String plainText = "hsim@checkpoint.com";
-        obj.setDomain(plainText);
+        obj.setEmail(plainText);
         ruleTestUtil.getMsgChecker().checkDataInnerRules(this.data, this.obj);
-        Assert.assertEquals(obj.getDomain(), plainText);
+        Assert.assertEquals(obj.getEmail(), plainText);
     }
 
     @Test
     public void test_fail_2() {
         String plainText = "hsim@checkpoint.com";
-        String base64Text = Base64.getEncoder().encodeToString(plainText.getBytes()) +"##";
-        obj.setDomain(base64Text);
+        String base64Text = Base64.getEncoder().encodeToString(plainText.getBytes()) + "##";
+        obj.setEmail(base64Text);
         ruleTestUtil.getMsgChecker().checkDataInnerRules(this.data, this.obj);
-        Assert.assertEquals(obj.getDomain(), base64Text);
+        Assert.assertEquals(obj.getEmail(), base64Text);
     }
 
     @Test
     public void test_success_1() {
         String plainText = "hsim@checkpoint.com";
-        String base64Text = Base64.getEncoder().encodeToString(plainText.getBytes()) ;
-        obj.setDomain(base64Text);
+        String base64Text = Base64.getEncoder().encodeToString(plainText.getBytes());
+        obj.setEmail(base64Text);
         ruleTestUtil.getMsgChecker().checkDataInnerRules(this.data, this.obj);
-        Assert.assertEquals(obj.getDomain(), plainText);
+        Assert.assertEquals(obj.getEmail(), plainText);
     }
 
 }
