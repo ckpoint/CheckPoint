@@ -12,6 +12,7 @@ import hsim.checkpoint.core.repository.ValidationDataRepository;
 import hsim.checkpoint.core.store.ValidationStore;
 import hsim.checkpoint.type.ParamType;
 import hsim.checkpoint.util.AnnotationScanner;
+import hsim.checkpoint.util.excel.TypeCheckUtil;
 import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.Field;
@@ -83,6 +84,17 @@ public class MsgSaver {
         }
     }
 
+    private ValidationData saveParam(DetailParam detailParam, ParamType paramType, ReqUrl reqUrl, ValidationData parent, Field field, int deepLevel) {
+        ValidationData param = this.validationDataRepository.findByParamTypeAndMethodAndUrlAndNameAndParentId(paramType, reqUrl.getMethod(), reqUrl.getUrl(), field.getName(), parent == null ? null : parent.getId());
+        if (param == null) {
+            param = new ValidationData(detailParam, paramType, reqUrl, parent, field, deepLevel);
+        } else {
+            param.updateKey(detailParam);
+        }
+
+        return this.validationDataRepository.save(param);
+    }
+
     private void saveParameter(DetailParam detailParam, ParamType paramType, ReqUrl reqUrl, ValidationData parent, Class<?> type, int deepLevel, final int maxDeepLevel) {
 
         if (!type.getSuperclass().equals(Object.class)) {
@@ -95,17 +107,13 @@ public class MsgSaver {
         }
 
         for (Field field : type.getDeclaredFields()) {
-            ValidationData param = this.validationDataRepository.findByParamTypeAndMethodAndUrlAndNameAndParentId(paramType, reqUrl.getMethod(), reqUrl.getUrl(), field.getName(), parent == null ? null : parent.getId());
-            if (param == null) {
-                param = new ValidationData(detailParam, paramType, reqUrl, parent, field, deepLevel);
-            } else {
-                param.updateKey(detailParam);
-            }
 
-            param = this.validationDataRepository.save(param);
+            ValidationData param = this.saveParam(detailParam, paramType, reqUrl, parent, field, deepLevel);
 
             if (param.isObj()) {
                 this.saveParameter(detailParam, paramType, reqUrl, param, param.getTypeClass(), deepLevel + 1, maxDeepLevel);
+            } else if (param.isList() && !param.isListChild() && TypeCheckUtil.isObjClass(param.getInnerClass())) {
+                this.saveParameter(detailParam, paramType, reqUrl, param, param.getInnerClass(), deepLevel + 1, maxDeepLevel);
             }
         }
     }

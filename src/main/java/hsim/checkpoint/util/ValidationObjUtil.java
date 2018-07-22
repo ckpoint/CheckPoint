@@ -10,6 +10,8 @@ import org.springframework.http.HttpStatus;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -438,7 +440,7 @@ public class ValidationObjUtil {
             bFields.add(blockField);
         }
 
-        return objectDeepCopyWithBlackList(from, to,  bFields.toArray(new String[bFields.size()]));
+        return objectDeepCopyWithBlackList(from, to, bFields.toArray(new String[bFields.size()]));
     }
 
     /**
@@ -492,6 +494,11 @@ public class ValidationObjUtil {
         }
 
         return v;
+    }
+
+    public static Class<?> getListInnerClassFromGenericType(Type genericType) {
+        ParameterizedType innerClass = (ParameterizedType) genericType;
+        return (Class<?>) innerClass.getActualTypeArguments()[0];
     }
 
 }

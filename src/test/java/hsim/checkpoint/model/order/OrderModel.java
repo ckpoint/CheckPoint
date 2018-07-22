@@ -16,5 +16,6 @@ public class OrderModel extends BaseModel {
     private UserModel user;
     private List<OrderItemModel> orderItems;
     private Long totalPrice;
+    private List<String> commentList;
 }
 

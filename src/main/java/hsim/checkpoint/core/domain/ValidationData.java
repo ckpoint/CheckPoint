@@ -41,6 +41,7 @@ public class ValidationData {
 
     private String type;
     private Class<?> typeClass;
+    private Class<?> innerClass;
 
     private boolean number;
     private boolean obj;
@@ -49,6 +50,8 @@ public class ValidationData {
 
     private String methodKey;
     private String parameterKey;
+
+    private boolean listChild;
 
     private boolean urlMapping;
 
@@ -80,6 +83,8 @@ public class ValidationData {
         this.parentId = parent == null ? null : parent.getId();
         this.deepLevel = deepLevel;
         this.urlMapping = detailParam.isUrlMapping();
+
+        this.listChild = (parent  != null && ( parent.isList() || parent.listChild));
 
         this.updateField(field);
         this.updateKey(detailParam);
@@ -131,8 +136,17 @@ public class ValidationData {
      */
     public void replaceValue(Object bodyObj, Object replaceValue) {
         Object parentObj = bodyObj;
-        if (this.parentId != null) {
-            parentObj = this.parent.getValue(bodyObj);
+
+        if(this.listChild) {
+            ValidationData rootListParent = this.findListParent();
+            if(this.deepLevel - rootListParent.deepLevel > 1 ){
+                parentObj = this.parent.getValue(bodyObj);
+            }
+        }
+        else {
+            if (this.parentId != null) {
+                parentObj = this.parent.getValue(bodyObj);
+            }
         }
 
         this.setter(this, parentObj, replaceValue);
@@ -154,11 +168,19 @@ public class ValidationData {
         }
     }
 
-    private Object getParentObj(ValidationData child, Object bodyObj) {
-        if (child.getParent() == null) {
+    private boolean isRootParent(ValidationData parent, ValidationData rootParent) {
+        if (parent == null) { return true; }
+
+        if (rootParent == null) { return false;
+        }
+        return parent.getId().equals(rootParent.getId());
+    }
+
+    private Object getParentObj(ValidationData child, Object bodyObj, ValidationData rootParent) {
+        if (isRootParent(child.getParent(), rootParent)) {
             return this.getter(child, bodyObj);
         }
-        return this.getter(child, this.getParentObj(child.getParent(), bodyObj));
+        return this.getter(child, this.getParentObj(child.getParent(), bodyObj, rootParent));
     }
 
     /**
@@ -168,8 +190,7 @@ public class ValidationData {
      * @return the value
      */
     public Object getValue(Object bodyObj) {
-
-        return this.getParentObj(this, bodyObj);
+        return this.getParentObj(this, bodyObj, this.findListParent());
     }
 
 
@@ -216,6 +237,11 @@ public class ValidationData {
         this.enumType = field.getType().isEnum();
         this.typeClass = field.getType();
         this.type = field.getType().getSimpleName();
+
+        if (this.list) {
+            this.innerClass = ValidationObjUtil.getListInnerClassFromGenericType(field.getGenericType());
+            this.type += "<" + this.innerClass.getSimpleName() + ">";
+        }
     }
 
     /**
@@ -253,9 +279,11 @@ public class ValidationData {
         return minimum;
     }
 
-    private ValidationRule getExistRule(ValidationRule r){
+    private ValidationRule getExistRule(ValidationRule r) {
         ValidationRule existRule = this.validationRules.stream().filter(rule -> r.getRuleName().equals(rule.getRuleName())).findFirst().orElse(null);
-        if(existRule != null){ return existRule; }
+        if (existRule != null) {
+            return existRule;
+        }
         return this.tempRules.stream().filter(rule -> r.getRuleName().equals(rule.getRuleName())).findFirst().orElse(null);
     }
 
@@ -270,7 +298,7 @@ public class ValidationData {
 
         rules.forEach(rule -> {
             ValidationRule existRule = this.getExistRule(rule);
-            ruleList.add( existRule != null ? existRule : rule);
+            ruleList.add(existRule != null ? existRule : rule);
         });
 
         this.validationRules.removeAll(ruleList);
@@ -280,6 +308,18 @@ public class ValidationData {
         this.validationRules.sort(new RuleSorter());
 
         return this;
+    }
+
+    public ValidationData findListParent() {
+        if (!this.listChild) {
+            return null;
+        }
+
+        ValidationData parent = this.parent;
+        while (parent != null && !parent.isList()) {
+            parent = parent.parent;
+        }
+        return parent;
     }
 
 }

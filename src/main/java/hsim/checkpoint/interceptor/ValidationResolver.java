@@ -70,8 +70,7 @@ public class ValidationResolver implements HandlerMethodArgumentResolver {
         this.msgSaver.urlCheckAndSave(basicCheckInfo, basicCheckInfo.getParamType(), basicCheckInfo.getReqUrl(), parameter.getParameterType());
 
         if (basicCheckInfo.getParamType().equals(ParamType.BODY) && basicCheckInfo.isListBody()) {
-            ParameterizedType paramType = (ParameterizedType) parameter.getGenericParameterType();
-            Class<?> paramClass = (Class<?>) paramType.getActualTypeArguments()[0];
+            Class<?> paramClass = ValidationObjUtil.getListInnerClassFromGenericType(parameter.getGenericParameterType());
             return this.objectMapper.readValue(basicCheckInfo.getBody(), this.objectMapper.getTypeFactory().constructCollectionType(List.class, paramClass));
             //TOO
         } else if (basicCheckInfo.getParamType().equals(ParamType.BODY)) {

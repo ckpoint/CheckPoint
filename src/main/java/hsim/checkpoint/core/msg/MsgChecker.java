@@ -75,6 +75,19 @@ public class MsgChecker {
         }
     }
 
+    public void checkPointListChild(ValidationData param, ValidationRule rule, Object bodyObj, Object standardValue) {
+        ValidationData listParent = param.findListParent();
+        List list = (List) listParent.getValue(bodyObj);
+        if (list == null || list.isEmpty()) {
+            return;
+        }
+
+        list.stream().forEach(item -> {
+            this.checkPoint(param, rule, item, standardValue);
+        });
+
+    }
+
     /**
      * Check data inner rules.
      *
@@ -83,7 +96,11 @@ public class MsgChecker {
      */
     public void checkDataInnerRules(ValidationData data, Object bodyObj) {
         data.getValidationRules().stream().filter(vr -> vr.isUse()).forEach(rule -> {
-            this.checkPoint(data, rule, bodyObj, rule.getStandardValue());
+            if (data.isListChild()) {
+                this.checkPointListChild(data, rule, bodyObj, rule.getStandardValue());
+            } else {
+                this.checkPoint(data, rule, bodyObj, rule.getStandardValue());
+            }
         });
     }
 

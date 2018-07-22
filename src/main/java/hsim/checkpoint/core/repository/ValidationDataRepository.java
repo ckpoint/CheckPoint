@@ -308,6 +308,8 @@ public class ValidationDataRepository {
         } catch (JsonProcessingException e) {
             throw new ValidationLibException("json str parsing error", HttpStatus.INTERNAL_SERVER_ERROR);
         }
+
+        this.refresh();
     }
 
     /**
