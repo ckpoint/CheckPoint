@@ -9,7 +9,15 @@
 	<packaging>jar</packaging>
 
 	<name>CheckPoint</name>
-	<description>Demo project for Spring Boot</description>
+	<description>Http request auto validation library for spring framework</description>
+
+	<licenses>
+		<license>
+			<name>apache-2.0</name>
+			<url>https://opensource.org/licenses/Apache-2.0</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
 
 	<parent>
 		<groupId>org.springframework.boot</groupId>
