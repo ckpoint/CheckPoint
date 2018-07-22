@@ -19,7 +19,7 @@ public class InitCheckPoint {
      * Instantiates a new Init check point.
      */
     public InitCheckPoint() {
-        this.validationDataRepository.dataInit();
+        this.validationDataRepository.refresh();
         this.methodSyncor.updateMethodKeyAsync();
     }
 

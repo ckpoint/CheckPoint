@@ -40,6 +40,16 @@ public class ValidationDataRepository {
      * Instantiates a new Validation data repository.
      */
     public ValidationDataRepository() {
+        this.findAll();
+        this.refresh();
+    }
+
+    /**
+     * Data init.
+     */
+    public void refresh() {
+        this.currentIdInit();
+        this.urlMapInit();
     }
 
     private void urlMapInit() {
@@ -65,15 +75,6 @@ public class ValidationDataRepository {
                 d.setParent(dataList.stream().filter(vd -> d.getParentId().equals(vd.getId())).findFirst().orElse(null));
             }
         });
-    }
-
-    /**
-     * Data init.
-     */
-    public void dataInit() {
-        this.findAll();
-        this.currentIdInit();
-        this.urlMapInit();
     }
 
     /**
