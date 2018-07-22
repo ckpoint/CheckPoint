@@ -2,6 +2,7 @@ package hsim.checkpoint.core.repository;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import hsim.checkpoint.config.ValidationConfig;
 import hsim.checkpoint.core.component.ComponentMap;
 import hsim.checkpoint.core.domain.ReqUrl;
 import hsim.checkpoint.core.domain.ValidationData;
@@ -28,11 +29,10 @@ public class ValidationDataRepository {
 
     private ObjectMapper objectMapper = ValidationObjUtil.getDefaultObjectMapper();
     private ValidationRuleStore validationRuleStore = ComponentMap.get(ValidationRuleStore.class);
+    private ValidationConfig validationConfig = ComponentMap.get(ValidationConfig.class);
 
     private List<ValidationData> datas;
     private Map<String, ReqUrl> urlMap;
-
-    private String filePath = "checkpoint/validation.json";
 
     private long currentMaxId = 0;
 
@@ -40,14 +40,13 @@ public class ValidationDataRepository {
      * Instantiates a new Validation data repository.
      */
     public ValidationDataRepository() {
-        this.findAll();
-        this.refresh();
     }
 
     /**
      * Data init.
      */
     public void refresh() {
+        this.findAll();
         this.currentIdInit();
         this.urlMapInit();
     }
@@ -120,7 +119,7 @@ public class ValidationDataRepository {
 
         List<ValidationData> list = null;
         try {
-            String jsonStr = ValidationFileUtil.readFileToString(new File(this.filePath), Charset.forName("UTF-8"));
+            String jsonStr = ValidationFileUtil.readFileToString(new File(this.validationConfig.getRepositoryPath()), Charset.forName("UTF-8"));
             list = objectMapper.readValue(jsonStr, objectMapper.getTypeFactory().constructCollectionType(List.class, ValidationData.class));
         } catch (IOException e) {
             list = new ArrayList<>();
@@ -301,7 +300,7 @@ public class ValidationDataRepository {
         try {
             String jsonStr = this.objectMapper.writeValueAsString(minimumList);
             try {
-                ValidationFileUtil.writeStringToFile(new File(this.filePath), jsonStr);
+                ValidationFileUtil.writeStringToFile(new File(this.validationConfig.getRepositoryPath()), jsonStr);
             } catch (IOException e) {
                 throw new ValidationLibException("file write error", HttpStatus.INTERNAL_SERVER_ERROR);
             }

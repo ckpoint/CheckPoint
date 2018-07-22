@@ -11,17 +11,20 @@ import org.springframework.beans.factory.annotation.Value;
 @Getter
 public class ValidationConfig {
 
-    @Value("${validation.fresh.url.save:false}")
+    @Value("${ckpoint.save.url:true}")
     private boolean freshUrlSave;
 
-    @Value("${validation.msg.check.body.logging:true}")
+    @Value("${ckpoint.max.deeplevel:5}")
+    private int maxDeepLevel;
+
+    @Value("${ckpoint.body.logging:true}")
     private boolean bodyLogging;
 
-    @Value("${validation.setting.password:taeon}")
+    @Value("${ckpoint.password:taeon}")
     private String authToken;
 
-    @Value("${validation.save.max.deeplevel:5}")
-    private int maxDeepLevel;
+    @Value("${ckpoint.path.repository:/checkpoint/validation.json}")
+    private String repositoryPath = "/checkpoint/validation.json";
 
 
 }

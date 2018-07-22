@@ -17,7 +17,12 @@ public class RepositoryTest {
     private ValidationDataRepository validationDataRepository = ComponentMap.get(ValidationDataRepository.class);
 
     @Test
-    public void test_order_0_saveTest(){
+    public void test_order_0_init() {
+        this.validationDataRepository.refresh();
+    }
+
+    @Test
+    public void test_order_1_saveTest() {
         ValidationData data = new ValidationData();
         data.setParamType(ParamType.BODY);
         data.setUrl("/order/url");
@@ -30,8 +35,8 @@ public class RepositoryTest {
     }
 
     @Test
-    public void test_order_1_findTest(){
-        List<ValidationData> datas =this.validationDataRepository.findByParamTypeAndMethodAndUrlAndName(ParamType.BODY, "POST", "/order/url", "order");
+    public void test_order_2_findTest() {
+        List<ValidationData> datas = this.validationDataRepository.findByParamTypeAndMethodAndUrlAndName(ParamType.BODY, "POST", "/order/url", "order");
         Assert.assertNotNull(datas.get(0));
     }
 }
