@@ -4,8 +4,10 @@
 ##Http request auto validation library for spring framework
 
 Check-Point depends on
- <a href="https://github.com/FasterXML/jackson">Jackson Json Processor</a>, <a href="http://projectlombok.org/" rel="nofollow">Project Lombok</a>, <a href="https://github.com/apache/poi">Apache POI</a> .
- 
+
+[Jackson Json Processor](https://github.com/FasterXML/jackson), [Project Lombok](http://projectlombok.org/),
+[Apache POI](https://github.com/apache/poi)
+
  Check-Point is a library that automatically checks the integrity of request messages that developers are most likely to miss during the spring project development.
  
 Null check, minimum, maximum value of message..
