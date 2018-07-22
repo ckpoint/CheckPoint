@@ -67,7 +67,7 @@ public class BlackListCheck {
     public static class WhiteListCallback implements ValidationInvalidCallback {
         @Override
         public void exception(ValidationData param, Object inputValue, Object standardValue) {
-            throw new ValidationLibException(param.getName() + " test exception", HttpStatus.NOT_ACCEPTABLE);
+            throw new ValidationLibException(param.getName() + " order exception", HttpStatus.NOT_ACCEPTABLE);
         }
     }
 

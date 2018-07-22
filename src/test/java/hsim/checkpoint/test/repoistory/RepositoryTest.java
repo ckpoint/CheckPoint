@@ -20,9 +20,9 @@ public class RepositoryTest {
     public void test_order_0_saveTest(){
         ValidationData data = new ValidationData();
         data.setParamType(ParamType.BODY);
-        data.setUrl("/test/url");
+        data.setUrl("/order/url");
         data.setMethod("POST");
-        data.setName("test");
+        data.setName("order");
         data.setTypeClass(String.class);
         data.setType("String");
         data = this.validationDataRepository.save(data);
@@ -31,7 +31,7 @@ public class RepositoryTest {
 
     @Test
     public void test_order_1_findTest(){
-        List<ValidationData> datas =this.validationDataRepository.findByParamTypeAndMethodAndUrlAndName(ParamType.BODY, "POST", "/test/url", "test");
+        List<ValidationData> datas =this.validationDataRepository.findByParamTypeAndMethodAndUrlAndName(ParamType.BODY, "POST", "/order/url", "order");
         Assert.assertNotNull(datas.get(0));
     }
 }

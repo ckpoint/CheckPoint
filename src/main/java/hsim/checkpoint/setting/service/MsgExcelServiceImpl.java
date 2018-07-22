@@ -6,7 +6,6 @@ import hsim.checkpoint.core.component.validationRule.type.StandardValueType;
 import hsim.checkpoint.core.domain.ReqUrl;
 import hsim.checkpoint.core.domain.ValidationData;
 import hsim.checkpoint.core.repository.ValidationDataRepository;
-import hsim.checkpoint.core.store.ValidationStore;
 import hsim.checkpoint.type.ParamType;
 import hsim.checkpoint.util.excel.PoiWorkBook;
 import hsim.checkpoint.util.excel.PoiWorkSheet;
@@ -22,7 +21,6 @@ import java.util.List;
 @Slf4j
 public class MsgExcelServiceImpl implements MsgExcelService {
 
-    private ValidationStore validationStore = ComponentMap.get(ValidationStore.class);
     private ValidationDataRepository validationDataRepository = ComponentMap.get(ValidationDataRepository.class);
 
 

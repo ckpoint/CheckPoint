@@ -12,14 +12,12 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class InitCheckPoint {
 
-    private ValidationDataRepository validationDataRepository = ComponentMap.get(ValidationDataRepository.class);
     private MethodSyncor methodSyncor = ComponentMap.get(MethodSyncor.class);
 
     /**
      * Instantiates a new Init check point.
      */
     public InitCheckPoint() {
-        this.validationDataRepository.refresh();
         this.methodSyncor.updateMethodKeyAsync();
     }
 

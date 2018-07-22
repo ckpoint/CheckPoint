@@ -84,6 +84,11 @@ public class MsgSaver {
     }
 
     private void saveParameter(DetailParam detailParam, ParamType paramType, ReqUrl reqUrl, ValidationData parent, Class<?> type, int deepLevel, final int maxDeepLevel) {
+
+        if (!type.getSuperclass().equals(Object.class)) {
+            this.saveParameter(detailParam, paramType, reqUrl, parent, type.getSuperclass(), deepLevel, maxDeepLevel);
+        }
+
         if (deepLevel > maxDeepLevel) {
             log.info(detailParam.getParameterType().getName() + "deep level " + deepLevel + " param : " + type.getName());
             return;

@@ -64,7 +64,7 @@ public class MandatoryRuleTest {
     public static class MandatoryCallback implements ValidationInvalidCallback {
         @Override
         public void exception(ValidationData param, Object inputValue, Object standardValue) {
-            throw new ValidationLibException(param.getName() + " test exception", HttpStatus.NO_CONTENT);
+            throw new ValidationLibException(param.getName() + " order exception", HttpStatus.NO_CONTENT);
         }
     }
 }
