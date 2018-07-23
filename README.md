@@ -26,6 +26,7 @@ TODO
 - [ 4. Add Custom Validation Rule](#add-custom-validation-rule)
 - [ 5. Replace Validation Exception](#replace-validation-exception)
 - [ 6. Replace Object Mapper](#replace-object-mapper)
+- [ 7. Client and Validation Setting](#client-and-validation-setting)
 
 ## Add Properties
 
@@ -173,3 +174,7 @@ public void replaceObjectMapper(){
 	helper.replaceObjectMapper(mapper);
 }
 ```
+
+## Client and Validation Setting
+
+https://github.com/ckpoint/CheckPointClient
