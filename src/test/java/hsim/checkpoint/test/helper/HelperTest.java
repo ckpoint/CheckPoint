@@ -7,6 +7,7 @@ import hsim.checkpoint.core.component.validationRule.rule.ValidationRule;
 import hsim.checkpoint.core.component.validationRule.type.BasicCheckRule;
 import hsim.checkpoint.core.component.validationRule.type.StandardValueType;
 import hsim.checkpoint.core.domain.ValidationData;
+import hsim.checkpoint.core.repository.ValidationDataRepository;
 import hsim.checkpoint.core.store.ValidationRuleStore;
 import hsim.checkpoint.exception.ValidationLibException;
 import hsim.checkpoint.helper.CheckPointHelper;
@@ -17,8 +18,13 @@ import org.springframework.http.HttpStatus;
 
 public class HelperTest {
 
+    private ValidationDataRepository validationDataRepository = ComponentMap.get(ValidationDataRepository.class);
+
     @Test
     public void test_addrule() {
+
+        this.validationDataRepository.refresh();
+
         CheckPointHelper checkPointHelper = new CheckPointHelper();
         checkPointHelper.addValidationRule("ruleTest", StandardValueType.NUMBER, new TestRule(), new AssistType().string()).flush();
         checkPointHelper.replaceExceptionCallback(BasicCheckRule.Mandatory, new MandatoryRuleTest.MandatoryCallback());
