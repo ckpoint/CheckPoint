@@ -23,7 +23,9 @@ TODO
 - [ 1. Add Properties ](#add-properteis)
 - [ 2. Setting Api Controller Add ](#add-setting-controller)
 - [ 3. Add Annotation ](#add-annotation)
-- [ 3. Add Custom Validation Rule](#add-custom-validation-rule)
+- [ 4. Add Custom Validation Rule](#add-custom-validation-rule)
+- [ 5. Replace Validation Exception](#replace-validation-exception)
+- [ 6. Replace Object Mapper](#replace-object-mapper)
 
 ## Add Properties
 
@@ -130,4 +132,44 @@ public class EmptyValueCheck implements BaseValidationCheck {
    CheckPointHelper checkPointHelper = new CheckPointHelper();
    checkPointHelper.addValidationRule("emptyValueCheck", StandardValueType.STRING, new EmptyValueCheck(), new AssistType().string());
    checkPointHelper.flush();
+```
+
+## Replace Validation Exception
+
+-  Define a class that  implements ValidationInvalidCallback as shown below.
+```java
+import hsim.checkpoint.core.component.validationRule.callback.ValidationInvalidCallback;
+import hsim.checkpoint.core.domain.ValidationData;
+import hsim.checkpoint.exception.ValidationLibException;
+import org.springframework.http.HttpStatus;
+
+public class MinSizeCallback implements ValidationInvalidCallback {
+    @Override
+    public void exception(ValidationData param, Object inputValue, Object standardValue) {
+        throw new ValidationLibException(param.getName() + " value minimum is " + standardValue + " but, input " + inputValue, HttpStatus.NOT_ACCEPTABLE);
+    }
+}
+```
+- Then replace the callback using CheckPointHelper as below.
+
+```java
+public void replaceMinSizeCallback(){
+    CheckPointHelper checkPointHelper = new CheckPointHelper();
+    checkPointHelper.replaceExceptionCallback(BasicCheckRule.MinSize, new MinSizeCallback());
+}
+```
+
+## Replace Object Mapper
+
+- You can replace ObjectMapper, which is used for message parsing.
+```java
+public void replaceObjectMapper(){
+	CheckPointHelper helper = new CheckPointHelper();
+	ObjectMapper mapper = new ObjectMapper();
+	mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+	mapper.configure(DeserializationFeature.READ_UNKNOWN_ENUM_VALUES_AS_NULL, true);
+	mapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
+	mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+	helper.replaceObjectMapper(mapper);
+}
 ```
