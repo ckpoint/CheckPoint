@@ -11,6 +11,7 @@ import hsim.checkpoint.exception.ValidationLibException;
 import hsim.checkpoint.type.ParamType;
 import hsim.checkpoint.util.ValidationFileUtil;
 import hsim.checkpoint.util.ValidationObjUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 
 import java.io.File;
@@ -25,6 +26,7 @@ import java.util.stream.Collectors;
 /**
  * The type Validation data repository.
  */
+@Slf4j
 public class ValidationDataRepository {
 
     private ObjectMapper objectMapper = ValidationObjUtil.getDefaultObjectMapper();
@@ -69,9 +71,11 @@ public class ValidationDataRepository {
     }
 
     private void parentObjInit(List<ValidationData> dataList) {
+        Map<Long, ValidationData > map =new HashMap<>();
+        dataList.stream().forEach(d -> { map.put(d.getId(), d); });
         dataList.stream().forEach(d -> {
             if (d.getParentId() != null) {
-                d.setParent(dataList.stream().filter(vd -> d.getParentId().equals(vd.getId())).findFirst().orElse(null));
+                d.setParent(map.get(d.getParentId()));
             }
         });
     }
@@ -119,13 +123,17 @@ public class ValidationDataRepository {
 
         List<ValidationData> list = null;
         try {
-            String jsonStr = ValidationFileUtil.readFileToString(new File(this.validationConfig.getRepositoryPath()), Charset.forName("UTF-8"));
+            File repositroyFile = new File(this.validationConfig.getRepositoryPath());
+            String jsonStr = ValidationFileUtil.readFileToString(repositroyFile, Charset.forName("UTF-8"));
+            log.info("json read ok : " + repositroyFile.getAbsolutePath() );
             list = objectMapper.readValue(jsonStr, objectMapper.getTypeFactory().constructCollectionType(List.class, ValidationData.class));
         } catch (IOException e) {
             list = new ArrayList<>();
         }
+        log.info("list read ok");
 
         this.parentObjInit(list);
+        log.info("parent obj init ok");
 
         if (referenceCache) {
             this.datas = list;
@@ -295,7 +303,8 @@ public class ValidationDataRepository {
      */
     public synchronized void flush() {
 
-        List<ValidationData> minimumList = this.datas.stream().map(vd -> vd.minimalize()).collect(Collectors.toList());
+        List<ValidationData> minimumList = new ArrayList<>();
+        this.datas.forEach(data ->{ minimumList.add(data.minimalize()); });
 
         try {
             String jsonStr = this.objectMapper.writeValueAsString(minimumList);

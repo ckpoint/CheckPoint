@@ -68,7 +68,6 @@ public class ValidationStore {
             validationDataRuleListMap.put(ParamType.QUERY_PARAM.getUniqueKey(reqUrl), this.getMatchedValidaitonRule(ParamType.QUERY_PARAM, reqUrl));
         });
 
-        this.repository.datasRuleSync();
     }
 
     /**

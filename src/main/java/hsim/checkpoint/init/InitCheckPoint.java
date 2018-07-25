@@ -20,6 +20,9 @@ public class InitCheckPoint {
     public InitCheckPoint() {
         this.validationDataRepository.refresh();
         this.methodSyncor.updateMethodKeyAsync();
+        new Thread(() -> {
+            this.validationDataRepository.datasRuleSync();
+        }).start();
     }
 
 }
