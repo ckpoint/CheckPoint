@@ -102,7 +102,7 @@ public class MsgSaver {
         }
 
         if (deepLevel > maxDeepLevel) {
-            log.info(detailParam.getParameterType().getName() + "deep level " + deepLevel + " param : " + type.getName());
+            log.debug(detailParam.getParameterType().getName() + "deep level " + deepLevel + " param : " + type.getName());
             return;
         }
 
