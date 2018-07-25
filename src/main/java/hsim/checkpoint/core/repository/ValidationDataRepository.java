@@ -317,6 +317,7 @@ public class ValidationDataRepository {
             throw new ValidationLibException("json str parsing error", HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
+        this.datasRuleSync();
         this.refresh();
     }
 
