@@ -487,10 +487,10 @@ public class ValidationObjUtil {
             if (v < 1) {
                 return null;
             }
-        } else if (ValidationObjUtil.isNumberObj(value)) {
-            v = Double.valueOf(value + "");
         } else if (value instanceof List) {
             v = ((List) value).size();
+        } else if (ValidationObjUtil.isNumberObj(value)) {
+            v = Double.valueOf(value + "");
         }
 
         return v;
