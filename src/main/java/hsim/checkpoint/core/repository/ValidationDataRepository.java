@@ -71,8 +71,10 @@ public class ValidationDataRepository {
     }
 
     private void parentObjInit(List<ValidationData> dataList) {
-        Map<Long, ValidationData > map =new HashMap<>();
-        dataList.stream().forEach(d -> { map.put(d.getId(), d); });
+        Map<Long, ValidationData> map = new HashMap<>();
+        dataList.stream().forEach(d -> {
+            map.put(d.getId(), d);
+        });
         dataList.stream().forEach(d -> {
             if (d.getParentId() != null) {
                 d.setParent(map.get(d.getParentId()));
@@ -125,7 +127,7 @@ public class ValidationDataRepository {
         try {
             File repositroyFile = new File(this.validationConfig.getRepositoryPath());
             String jsonStr = ValidationFileUtil.readFileToString(repositroyFile, Charset.forName("UTF-8"));
-            log.info("json read ok : " + repositroyFile.getAbsolutePath() );
+            log.info("json read ok : " + repositroyFile.getAbsolutePath());
             list = objectMapper.readValue(jsonStr, objectMapper.getTypeFactory().constructCollectionType(List.class, ValidationData.class));
         } catch (IOException e) {
             list = new ArrayList<>();
@@ -303,11 +305,10 @@ public class ValidationDataRepository {
      */
     public synchronized void flush() {
 
-        List<ValidationData> minimumList = new ArrayList<>();
-        this.datas.forEach(data ->{ minimumList.add(data.minimalize()); });
+        this.datas.forEach(ValidationData::minimalize);
 
         try {
-            String jsonStr = this.objectMapper.writeValueAsString(minimumList);
+            String jsonStr = this.objectMapper.writeValueAsString(this.datas);
             try {
                 ValidationFileUtil.writeStringToFile(new File(this.validationConfig.getRepositoryPath()), jsonStr);
             } catch (IOException e) {

@@ -274,9 +274,8 @@ public class ValidationData {
      * @return the validation data
      */
     public ValidationData minimalize() {
-        ValidationData minimum = ValidationObjUtil.objectDeepCopyWithBlackList(this, ValidationData.class, "parent", "validaitonRule");
-        minimum.setValidationRules(this.validationRules.stream().filter(vr -> vr.isUse()).collect(Collectors.toList()));
-        return minimum;
+        this.setValidationRules(this.validationRules.stream().filter(vr -> vr.isUse()).collect(Collectors.toList()));
+        return this;
     }
 
     private ValidationRule getExistRule(ValidationRule r) {
