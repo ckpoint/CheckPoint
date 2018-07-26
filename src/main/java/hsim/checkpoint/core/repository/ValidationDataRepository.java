@@ -265,7 +265,7 @@ public class ValidationDataRepository {
      * @return the list
      */
     public List<ValidationData> saveAll(List<ValidationData> pDatas) {
-        pDatas.forEach(data -> this.save(data));
+        pDatas.forEach(this::save);
         return pDatas;
     }
 
@@ -287,6 +287,19 @@ public class ValidationDataRepository {
         this.datas = this.datas.stream().filter(d -> !d.getId().equals(pData.getId())).collect(Collectors.toList());
     }
 
+    private ValidationData addData(ValidationData data){
+
+        ValidationData existData = this.findByParamTypeAndMethodAndUrlAndNameAndParentId(data.getParamType(), data.getMethod(), data.getUrl(), data.getName(), data.getParentId());
+
+        if(existData == null) {
+            data.setId(++this.currentMaxId);
+            this.datas.add(data);
+            return data;
+        }
+        else{
+            return existData;
+        }
+    }
     /**
      * Save validation data.
      *
@@ -297,16 +310,15 @@ public class ValidationDataRepository {
         if (data.getParamType() == null || data.getUrl() == null || data.getMethod() == null || data.getType() == null || data.getTypeClass() == null) {
             throw new ValidationLibException("mandatory field is null ", HttpStatus.BAD_REQUEST);
         }
+
         ValidationData existData = this.datas.stream().filter(d -> d.getId().equals(data.getId())).findAny().orElse(null);
         if (existData == null) {
-            data.setId(++this.currentMaxId);
-            this.datas.add(data);
+            return this.addData(data);
         } else {
             ValidationObjUtil.objectDeepCopyWithBlackList(data, existData, "id");
             existData.setValidationRules(data.getValidationRules());
+            return existData;
         }
-
-        return data;
     }
 
     /**
