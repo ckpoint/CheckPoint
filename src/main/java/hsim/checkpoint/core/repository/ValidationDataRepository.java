@@ -134,18 +134,16 @@ public class ValidationDataRepository {
         }
 
         List<ValidationData> list = null;
+        File repositroyFile = new File(this.validationConfig.getRepositoryPath());
         try {
-            File repositroyFile = new File(this.validationConfig.getRepositoryPath());
             String jsonStr = ValidationFileUtil.readFileToString(repositroyFile, Charset.forName("UTF-8"));
-            log.info("json read ok : " + repositroyFile.getAbsolutePath());
             list = objectMapper.readValue(jsonStr, objectMapper.getTypeFactory().constructCollectionType(List.class, ValidationData.class));
         } catch (IOException e) {
+            log.error("repository json file read error : " + repositroyFile.getAbsolutePath());
             list = new ArrayList<>();
         }
-        log.info("list read ok");
 
         this.parentObjInit(list);
-        log.info("parent obj init ok");
 
         if (referenceCache) {
             this.datas = list;
