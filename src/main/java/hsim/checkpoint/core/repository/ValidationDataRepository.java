@@ -60,6 +60,8 @@ public class ValidationDataRepository {
        index.add(data);
        this.indexs.put(url.getUniqueKey(), index);
     }
+
+
     private void urlMapInit() {
         this.urlMap = new HashMap<>();
         this.datas.stream().forEach(d -> {

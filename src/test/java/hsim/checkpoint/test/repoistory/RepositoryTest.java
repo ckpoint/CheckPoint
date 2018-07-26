@@ -32,6 +32,7 @@ public class RepositoryTest {
         data.setType("String");
         data = this.validationDataRepository.save(data);
         Assert.assertNotNull(data.getId());
+        this.validationDataRepository.flush();
     }
 
     @Test
