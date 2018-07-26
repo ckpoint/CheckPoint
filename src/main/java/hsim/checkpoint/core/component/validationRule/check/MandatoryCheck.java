@@ -19,8 +19,13 @@ public class MandatoryCheck implements BaseValidationCheck {
         if (value == null) {
             return false;
         }
-        String sv = String.valueOf(value);
-        return !sv.isEmpty();
+
+        if( value instanceof String) {
+            String sv = String.valueOf(value);
+            return !sv.isEmpty();
+        }
+
+        return true;
     }
 
     @Override
