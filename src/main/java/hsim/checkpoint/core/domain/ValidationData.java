@@ -224,6 +224,18 @@ public class ValidationData {
         return this;
     }
 
+    public boolean diffKey(DetailParam detailParam){
+        if (detailParam == null) {
+            return false;
+        }
+
+        if(!detailParam.getMethodKey().equals(this.methodKey)){
+            return true;
+        }
+
+        return detailParam.isUrlMapping() != this.isUrlMapping();
+    }
+
     /**
      * Update field.
      *

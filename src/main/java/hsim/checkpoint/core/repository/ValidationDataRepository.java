@@ -35,6 +35,7 @@ public class ValidationDataRepository {
 
     private List<ValidationData> datas;
     private Map<String, ReqUrl> urlMap;
+    private Map<String, List<ValidationData>> indexs = new HashMap<>();
 
     private long currentMaxId = 0;
 
@@ -53,11 +54,18 @@ public class ValidationDataRepository {
         this.urlMapInit();
     }
 
+    private void addIdx(ReqUrl url, ValidationData data){
+       List<ValidationData> index = this.indexs.get(url.getUniqueKey());
+       if(index == null){ index = new ArrayList<>(); }
+       index.add(data);
+       this.indexs.put(url.getUniqueKey(), index);
+    }
     private void urlMapInit() {
         this.urlMap = new HashMap<>();
         this.datas.stream().forEach(d -> {
             ReqUrl reqUrl = new ReqUrl(d);
             this.urlMap.put(reqUrl.getUniqueKey(), reqUrl);
+            this.addIdx(reqUrl, d);
         });
     }
 
@@ -159,7 +167,8 @@ public class ValidationDataRepository {
      * @return the list
      */
     public List<ValidationData> findByMethodAndUrl(String method, String url) {
-        return this.datas.stream().filter(d -> d.getUrl().equalsIgnoreCase(url) && d.getMethod().equalsIgnoreCase(method)).collect(Collectors.toList());
+        List<ValidationData> list = this.indexs.get(new ReqUrl(method, url).getUniqueKey());
+        return list == null ? new ArrayList<>() : list;
     }
 
     /**

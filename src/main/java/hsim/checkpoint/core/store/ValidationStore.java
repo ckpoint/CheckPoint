@@ -41,10 +41,6 @@ public class ValidationStore {
         return allList.stream().filter(d -> d.getParamType().equals(paramType) && d.equalUrl(reqUrl)).collect(Collectors.toList());
     }
 
-    private void validaitonDataEmptyFilter(ValidationData data) {
-        data.setValidationRules(data.getValidationRules().stream().filter(vr -> vr.isUse()).collect(Collectors.toList()));
-    }
-
     private void validationDataInit() {
 
         allList = this.repository.findAll(false);
@@ -58,7 +54,6 @@ public class ValidationStore {
             }
         });
 
-        allList.forEach(this::validaitonDataEmptyFilter);
         allList = allList.stream().filter(vd -> !vd.getValidationRules().isEmpty()).collect(Collectors.toList());
 
         urlMap.entrySet().stream().forEach(entry -> {

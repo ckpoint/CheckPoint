@@ -37,12 +37,10 @@ public class MethodSyncor {
      * Update method key async.
      */
     public void updateMethodKeyAsync() {
-        new Thread(() -> {
-            this.updateMethodKey();
-        }).start();
+        new Thread(this::updateMethodKey).start();
     }
 
-    private void updateMethodKey() {
+    public void updateMethodKey() {
         Arrays.stream(ParamType.values()).forEach(paramType -> this.syncMethodKey(paramType));
 
         this.validationDataRepository.flush();
@@ -58,7 +56,7 @@ public class MethodSyncor {
             List<ReqUrl> urls = param.getReqUrls();
             urls.forEach(url -> {
                 List<ValidationData> datas = this.validationDataRepository.findByParamTypeAndMethodAndUrl(paramType, url.getMethod(), url.getUrl());
-                if (!datas.isEmpty()) {
+                if (!datas.isEmpty() && !datas.get(0).diffKey(param)) {
                     this.validationDataRepository.saveAll(datas.stream().map(data -> data.updateKey(param)).collect(Collectors.toList()));
                 }
             });
