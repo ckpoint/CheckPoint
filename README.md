@@ -20,7 +20,7 @@ Null check, minimum, maximum value of message.. You do not need to code anymore,
     <dependency>
         <groupId>com.github.ckpoint</groupId>
         <artifactId>check-point</artifactId>
-        <version>0.0.3</version>
+        <version>0.0.4</version>
     </dependency>
 ```
 
