@@ -16,11 +16,10 @@ Null check, minimum, maximum value of message.. You do not need to code anymore,
 # Installation
 
 ```xml
-
     <dependency>
         <groupId>com.github.ckpoint</groupId>
         <artifactId>check-point</artifactId>
-        <version>0.0.4</version>
+        <version>0.0.5</version>
     </dependency>
 ```
 
