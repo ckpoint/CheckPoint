@@ -15,12 +15,18 @@ Null check, minimum, maximum value of message.. You do not need to code anymore,
 
 # Installation
 
+#### 1. MAVEN
 ```xml
     <dependency>
         <groupId>com.github.ckpoint</groupId>
         <artifactId>check-point</artifactId>
-        <version>0.0.5</version>
+        <version>0.1.0</version>
     </dependency>
+
+```
+#### 2. GRADLE
+```xml
+  compile group: 'com.github.ckpoint', name: 'check-point', version: '0.1.0'
 ```
 
 # Usage
