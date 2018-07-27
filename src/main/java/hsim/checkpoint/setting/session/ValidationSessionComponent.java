@@ -14,7 +14,7 @@ import java.util.Map;
 import java.util.Random;
 
 /**
- * The type Validation session component.
+ * The type Validation session idx.
  */
 public class ValidationSessionComponent {
 

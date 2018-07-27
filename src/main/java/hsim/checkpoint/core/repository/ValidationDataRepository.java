@@ -6,6 +6,7 @@ import hsim.checkpoint.config.ValidationConfig;
 import hsim.checkpoint.core.component.ComponentMap;
 import hsim.checkpoint.core.domain.ReqUrl;
 import hsim.checkpoint.core.domain.ValidationData;
+import hsim.checkpoint.core.repository.index.map.ValidationDataIndexMap;
 import hsim.checkpoint.core.store.ValidationRuleStore;
 import hsim.checkpoint.exception.ValidationLibException;
 import hsim.checkpoint.type.ParamType;
@@ -32,10 +33,9 @@ public class ValidationDataRepository {
     private ObjectMapper objectMapper = ValidationObjUtil.getDefaultObjectMapper();
     private ValidationRuleStore validationRuleStore = ComponentMap.get(ValidationRuleStore.class);
     private ValidationConfig validationConfig = ComponentMap.get(ValidationConfig.class);
+    private ValidationDataIndexMap indexMap = ComponentMap.get(ValidationDataIndexMap.class);
 
     private List<ValidationData> datas;
-    private Map<String, ReqUrl> urlMap;
-    private Map<String, List<ValidationData>> indexs = new HashMap<>();
 
     private long currentMaxId = 0;
 
@@ -51,23 +51,12 @@ public class ValidationDataRepository {
     public void refresh() {
         this.findAll();
         this.currentIdInit();
-        this.urlMapInit();
+        this.indexInit();
     }
 
-    private void addIdx(ReqUrl url, ValidationData data){
-       List<ValidationData> index = this.indexs.get(url.getUniqueKey());
-       if(index == null){ index = new ArrayList<>(); }
-       index.add(data);
-       this.indexs.put(url.getUniqueKey(), index);
-    }
-
-
-    private void urlMapInit() {
-        this.urlMap = new HashMap<>();
+    private void indexInit() {
         this.datas.stream().forEach(d -> {
-            ReqUrl reqUrl = new ReqUrl(d);
-            this.urlMap.put(reqUrl.getUniqueKey(), reqUrl);
-            this.addIdx(reqUrl, d);
+            this.indexMap.addIndex(d);
         });
     }
 
@@ -109,7 +98,7 @@ public class ValidationDataRepository {
      * @return the validation data
      */
     public ValidationData findById(Long id) {
-        return this.datas.stream().filter(d -> d.getId() != null && d.getId().equals(id)).findFirst().orElse(null);
+        return this.indexMap.findById(id);
     }
 
     /**
@@ -167,8 +156,7 @@ public class ValidationDataRepository {
      * @return the list
      */
     public List<ValidationData> findByMethodAndUrl(String method, String url) {
-        List<ValidationData> list = this.indexs.get(new ReqUrl(method, url).getUniqueKey());
-        return list == null ? new ArrayList<>() : list;
+        return this.indexMap.findByMethodAndUrl(method, url);
     }
 
     /**
@@ -275,7 +263,14 @@ public class ValidationDataRepository {
      * @param pDatas the p datas
      */
     public void deleteAll(List<ValidationData> pDatas) {
-        pDatas.stream().forEach(data -> delete(data));
+        pDatas.forEach(this::delete);
+    }
+
+    public void truncate() {
+        this.datas = new ArrayList<>();
+        this.indexMap.refresh();
+        this.flush();
+        this.refresh();
     }
 
     /**
@@ -284,22 +279,17 @@ public class ValidationDataRepository {
      * @param pData the p data
      */
     public void delete(ValidationData pData) {
-        this.datas = this.datas.stream().filter(d -> !d.getId().equals(pData.getId())).collect(Collectors.toList());
+        this.datas.remove(this.findById(pData.getId()));
+        this.indexMap.removeIndex(pData);
     }
 
-    private ValidationData addData(ValidationData data){
-
-        ValidationData existData = this.findByParamTypeAndMethodAndUrlAndNameAndParentId(data.getParamType(), data.getMethod(), data.getUrl(), data.getName(), data.getParentId());
-
-        if(existData == null) {
-            data.setId(++this.currentMaxId);
-            this.datas.add(data);
-            return data;
-        }
-        else{
-            return existData;
-        }
+    private ValidationData addData(ValidationData data) {
+        data.setId(++this.currentMaxId);
+        this.datas.add(data);
+        this.indexMap.addIndex(data);
+        return data;
     }
+
     /**
      * Save validation data.
      *
@@ -311,11 +301,11 @@ public class ValidationDataRepository {
             throw new ValidationLibException("mandatory field is null ", HttpStatus.BAD_REQUEST);
         }
 
-        ValidationData existData = this.datas.stream().filter(d -> d.getId().equals(data.getId())).findAny().orElse(null);
+        ValidationData existData = this.findById(data.getId());
+
         if (existData == null) {
             return this.addData(data);
         } else {
-            ValidationObjUtil.objectDeepCopyWithBlackList(data, existData, "id");
             existData.setValidationRules(data.getValidationRules());
             return existData;
         }
@@ -340,7 +330,6 @@ public class ValidationDataRepository {
         }
 
         this.datasRuleSync();
-        this.refresh();
     }
 
     /**
@@ -349,7 +338,7 @@ public class ValidationDataRepository {
      * @return the list
      */
     public List<ReqUrl> findAllUrl() {
-        return this.urlMap.entrySet().stream().map(entry -> entry.getValue()).collect(Collectors.toList());
+        return this.indexMap.getUrlList();
     }
 
 }
