@@ -40,6 +40,9 @@ public class MethodSyncor {
         new Thread(this::updateMethodKey).start();
     }
 
+    /**
+     * Update method key.
+     */
     public void updateMethodKey() {
         Arrays.stream(ParamType.values()).forEach(paramType -> this.syncMethodKey(paramType));
 

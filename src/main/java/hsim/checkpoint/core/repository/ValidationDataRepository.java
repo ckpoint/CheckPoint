@@ -266,6 +266,9 @@ public class ValidationDataRepository {
         pDatas.forEach(this::delete);
     }
 
+    /**
+     * Truncate.
+     */
     public void truncate() {
         this.datas = new ArrayList<>();
         this.indexMap.refresh();

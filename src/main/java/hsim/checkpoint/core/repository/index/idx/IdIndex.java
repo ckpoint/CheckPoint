@@ -8,8 +8,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * The type Id index.
+ */
 public class IdIndex implements ValidationDataIndex {
 
+    /**
+     * The Index map.
+     */
     Map<String, List<ValidationData>> indexMap = new HashMap<>();
 
     @Override

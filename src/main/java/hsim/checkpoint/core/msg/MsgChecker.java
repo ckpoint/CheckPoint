@@ -75,6 +75,14 @@ public class MsgChecker {
         }
     }
 
+    /**
+     * Check point list child.
+     *
+     * @param param         the param
+     * @param rule          the rule
+     * @param bodyObj       the body obj
+     * @param standardValue the standard value
+     */
     public void checkPointListChild(ValidationData param, ValidationRule rule, Object bodyObj, Object standardValue) {
         ValidationData listParent = param.findListParent();
         List list = (List) listParent.getValue(bodyObj);

@@ -496,6 +496,12 @@ public class ValidationObjUtil {
         return v;
     }
 
+    /**
+     * Gets list inner class from generic type.
+     *
+     * @param genericType the generic type
+     * @return the list inner class from generic type
+     */
     public static Class<?> getListInnerClassFromGenericType(Type genericType) {
         ParameterizedType innerClass = (ParameterizedType) genericType;
         return (Class<?>) innerClass.getActualTypeArguments()[0];

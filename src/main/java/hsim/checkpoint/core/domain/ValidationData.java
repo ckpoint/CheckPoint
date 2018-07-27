@@ -224,6 +224,12 @@ public class ValidationData {
         return this;
     }
 
+    /**
+     * Diff key boolean.
+     *
+     * @param detailParam the detail param
+     * @return the boolean
+     */
     public boolean diffKey(DetailParam detailParam){
         if (detailParam == null) {
             return false;
@@ -321,6 +327,11 @@ public class ValidationData {
         return this;
     }
 
+    /**
+     * Find list parent validation data.
+     *
+     * @return the validation data
+     */
     public ValidationData findListParent() {
         if (!this.listChild) {
             return null;

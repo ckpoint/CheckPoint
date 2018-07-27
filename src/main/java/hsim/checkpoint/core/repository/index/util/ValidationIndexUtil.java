@@ -7,8 +7,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * The type Validation index util.
+ */
 public class ValidationIndexUtil {
 
+    /**
+     * Add index data.
+     *
+     * @param data  the data
+     * @param index the index
+     */
     public static void addIndexData(ValidationData data, ValidationDataIndex index) {
         String key = index.getKey(data);
         List<ValidationData> datas = index.get(key);
@@ -19,6 +28,12 @@ public class ValidationIndexUtil {
         index.getMap().put(key, datas);
     }
 
+    /**
+     * Remove index data.
+     *
+     * @param data  the data
+     * @param index the index
+     */
     public static void removeIndexData(ValidationData data, ValidationDataIndex index) {
 
         String key = index.getKey(data);
@@ -34,6 +49,12 @@ public class ValidationIndexUtil {
         }
     }
 
+    /**
+     * Make key string.
+     *
+     * @param keys the keys
+     * @return the string
+     */
     public static String makeKey(String... keys) {
         StringBuffer keyBuffer = new StringBuffer();
         for (String s : keys) {

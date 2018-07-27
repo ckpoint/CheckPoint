@@ -8,8 +8,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * The type Method and url index.
+ */
 public class MethodAndUrlIndex implements ValidationDataIndex {
 
+    /**
+     * The Index map.
+     */
     Map<String, List<ValidationData>> indexMap = new HashMap<>();
 
     @Override
