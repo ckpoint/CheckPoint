@@ -25,7 +25,7 @@ Null check, minimum, maximum value of message.. You do not need to code anymore,
 
 ```
 #### 2. GRADLE
-```xml
+```gradle
   compile group: 'com.github.ckpoint', name: 'check-point', version: '0.1.0'
 ```
 
