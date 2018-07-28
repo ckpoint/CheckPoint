@@ -151,10 +151,21 @@ public class ValidationData {
 
         this.setter(this, parentObj, replaceValue);
     }
+    private Method getterSuperClass(ValidationData param, Class type) {
+        if(type == null){ return null; }
+
+        if (type != null && type.getSuperclass() != null && !type.getSuperclass().equals(Object.class)) {
+            return null;
+        }
+
+        return ValidationObjUtil.getGetterMethod(type.getSuperclass(), param.getName());
+    }
+
 
     private Object getter(ValidationData param, Object bodyObj) {
 
-        Method getter = ValidationObjUtil.getGetterMethod(bodyObj.getClass(), param.getName());
+        Method getter = ValidationObjUtil.getGetterMethod(bodyObj.getClass(), param.getName()) ;
+        getter = getter != null ? getter : this.getterSuperClass(param, bodyObj.getClass());
 
         if (getter == null) {
             log.error("getter method is null :" + param.getName());
