@@ -29,7 +29,7 @@ Null check, minimum, maximum value of message.. You do not need to code anymore,
   compile group: 'com.github.ckpoint', name: 'check-point', version: '0.1.0'
 ```
 # Check-Point Setting Guide
-    https://youtu.be/I1aEIztXlhE
+https://youtu.be/I1aEIztXlhE
 
 # Usage
 
