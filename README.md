@@ -28,6 +28,8 @@ Null check, minimum, maximum value of message.. You do not need to code anymore,
 ```gradle
   compile group: 'com.github.ckpoint', name: 'check-point', version: '0.1.0'
 ```
+# Check-Point Setting Guide
+    https://youtu.be/I1aEIztXlhE
 
 # Usage
 
@@ -39,6 +41,8 @@ Null check, minimum, maximum value of message.. You do not need to code anymore,
 - [ 5. Replace Validation Exception](#replace-validation-exception)
 - [ 6. Replace Object Mapper](#replace-object-mapper)
 - [ 7. Client and Validation Setting](#client-and-validation-setting)
+
+
 
 ## Add Properties
 
