@@ -1,21 +1,17 @@
 package hsim.checkpoint.util;
 
 import hsim.checkpoint.core.component.DetailParam;
-import hsim.checkpoint.util.excel.TypeCheckUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.io.File;
-import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Enumeration;
 import java.util.List;
-import java.util.jar.JarEntry;
-import java.util.jar.JarFile;
+import java.util.stream.Collectors;
 
 /**
  * The type Annotation scanner.
@@ -23,110 +19,26 @@ import java.util.jar.JarFile;
 @Slf4j
 public class AnnotationScanner {
 
-    private List<Class<?>> allClass = null;
+    private List<Class> controllers = null;
 
-    /**
-     * Instantiates a new Annotation scanner.
-     */
-    public AnnotationScanner() {
-        File rootDir = this.getClassRootDirectory();
-
-        if (rootDir != null) {
-            this.allClass = getDirClassList(rootDir, null);
-        } else {
-            this.initJar();
-        }
+    private boolean isControllerClass(Class type) {
+        return type.getAnnotation(RestController.class) != null || type.getAnnotation(Controller.class) != null;
     }
 
-    private void initJar() {
-        File file = new File("./");
+    private Class getController(Object bean) {
 
-        log.info("file exist : " + file.exists());
-        this.allClass = new ArrayList<>();
-        if (file.isDirectory()) {
-            Arrays.stream(file.list()).filter(f -> f.endsWith(".jar")).forEach(f -> {
-                this.allClass.addAll(this.getJarClassList(this.getJarFile(f)));
-            });
-        }
-    }
-
-    private JarFile getJarFile(String jarPath) {
-
-        log.info("jar Path :  " + jarPath);
-
-        if (jarPath != null) {
-            try {
-                return new JarFile(jarPath);
-            } catch (IOException e) {
-                log.info("jarFile exception : " + e.getMessage());
-            }
+        if (this.isControllerClass(bean.getClass())) {
+            return bean.getClass();
+        } else if (bean.getClass().getSuperclass() != null && !bean.getClass().getSuperclass().equals(Object.class) && this.isControllerClass(bean.getClass().getSuperclass())) {
+            return bean.getClass().getSuperclass();
         }
 
         return null;
     }
 
-    private File getClassRootDirectory() {
-        URL root = ClassLoader.getSystemClassLoader().getResource("");
-        if (root == null) {
-            return null;
-        }
-        return new File(root.getFile());
+    public void initBeans(Object[] beans) {
+        this.controllers = Arrays.stream(beans).filter(bean -> this.getController(bean) != null).map(bean -> this.getController(bean)).collect(Collectors.toList());
     }
-
-    private String fromFileToClassName(final String fileName) {
-        String className = fileName.substring(0, fileName.length() - 6).replaceAll("/|\\\\", "\\.");
-        if (className.indexOf("classes.") >= 0) {
-            return className.substring(className.indexOf("classes.") + 8);
-        }
-        return className;
-    }
-
-    private List<Class<?>> getJarClassList(JarFile jarFile) {
-        List<Class<?>> classList = new ArrayList<>();
-        Enumeration<JarEntry> entries = jarFile.entries();
-        while (entries.hasMoreElements()) {
-            JarEntry entry = entries.nextElement();
-            if (entry.getName().endsWith(".class")) {
-                String className = fromFileToClassName(entry.getName());
-                log.info(className);
-
-                try {
-                    if (TypeCheckUtil.isNotScanClass(className)) {
-                        continue;
-                    }
-                    Class<?> cla = Class.forName(className);
-                    classList.add(cla);
-                } catch (Exception e) {
-                    log.debug("class not found : " + className);
-                }
-            }
-        }
-        return classList;
-    }
-
-    private List<Class<?>> getDirClassList(File dir, String parent) {
-        List<Class<?>> classList = new ArrayList<>();
-        if (dir.exists()) {
-            Arrays.stream(dir.list()).forEach(f -> {
-                File file = new File(dir.getPath() + "/" + f);
-                if (file.isDirectory()) {
-                    classList.addAll(getDirClassList(file, parent == null ? file.getName() : parent + "/" + file.getName()));
-                } else {
-                    String filePath = parent + "/" + file.getName();
-                    try {
-                        String className = this.fromFileToClassName(filePath);
-                        if (!TypeCheckUtil.isNotScanClass(className)) {
-                            classList.add(Class.forName(className));
-                        }
-                    } catch (ClassNotFoundException e) {
-                        log.info("class not found : " + filePath);
-                    }
-                }
-            });
-        }
-        return classList;
-    }
-
 
     /**
      * Gets parameter from method with annotation.
@@ -177,7 +89,7 @@ public class AnnotationScanner {
      */
     public List<DetailParam> getParameterWithAnnotation(Class<?> annotation) {
         List<DetailParam> params = new ArrayList<>();
-        this.allClass.stream().forEach(cla -> params.addAll(this.getParameterFromClassWithAnnotation(cla, annotation)));
+        this.controllers.stream().forEach(cla -> params.addAll(this.getParameterFromClassWithAnnotation(cla, annotation)));
         return params;
 
     }

@@ -4,22 +4,28 @@ import hsim.checkpoint.core.component.ComponentMap;
 import hsim.checkpoint.core.msg.MethodSyncor;
 import hsim.checkpoint.core.repository.ValidationDataRepository;
 import hsim.checkpoint.core.store.ValidationStore;
-import lombok.extern.slf4j.Slf4j;
+import hsim.checkpoint.util.AnnotationScanner;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationListener;
+import org.springframework.context.event.ContextRefreshedEvent;
 
 /**
  * The type Init check point.
  */
-@Slf4j
-public class InitCheckPoint {
+public class InitCheckPoint implements ApplicationListener<ContextRefreshedEvent> {
+
+    @Autowired
+    private Object[] beans;
 
     private MethodSyncor methodSyncor = ComponentMap.get(MethodSyncor.class);
     private ValidationDataRepository validationDataRepository = ComponentMap.get(ValidationDataRepository.class);
     private ValidationStore validationStore = ComponentMap.get(ValidationStore.class);
+    private AnnotationScanner annotationScanner = ComponentMap.get(AnnotationScanner.class);
 
-    /**
-     * Instantiates a new Init check point.
-     */
-    public InitCheckPoint() {
+    @Override
+    public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {
+
+        this.annotationScanner.initBeans(this.beans);
         this.validationStore.refresh();
 
         new Thread(() -> {
@@ -28,5 +34,4 @@ public class InitCheckPoint {
             this.validationDataRepository.datasRuleSync();
         }).start();
     }
-
 }
