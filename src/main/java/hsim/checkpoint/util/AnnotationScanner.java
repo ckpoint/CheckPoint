@@ -36,6 +36,11 @@ public class AnnotationScanner {
         return null;
     }
 
+    /**
+     * Init beans.
+     *
+     * @param beans the beans
+     */
     public void initBeans(Object[] beans) {
         this.controllers = Arrays.stream(beans).filter(bean -> this.getController(bean) != null).map(bean -> this.getController(bean)).collect(Collectors.toList());
     }
