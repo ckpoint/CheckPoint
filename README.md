@@ -20,13 +20,13 @@ Null check, minimum, maximum value of message.. You do not need to code anymore,
     <dependency>
         <groupId>com.github.ckpoint</groupId>
         <artifactId>check-point</artifactId>
-        <version>0.1.0</version>
+        <version>0.1.2</version>
     </dependency>
 
 ```
 #### 2. GRADLE
 ```gradle
-  compile group: 'com.github.ckpoint', name: 'check-point', version: '0.1.0'
+  compile group: 'com.github.ckpoint', name: 'check-point', version: '0.1.2'
 ```
 # Check-Point Setting Guide
 https://youtu.be/I1aEIztXlhE
