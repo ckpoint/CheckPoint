@@ -23,7 +23,7 @@ public class ValidationConfig {
     @Value("${ckpoint.password:taeon}")
     private String authToken;
 
-    @Value("${ckpoint.path.repository:/checkpoint/validation.json}")
+    @Value("${ckpoint.path.repository:checkpoint/validation.json}")
     private String repositoryPath = "/checkpoint/validation.json";
 
 
