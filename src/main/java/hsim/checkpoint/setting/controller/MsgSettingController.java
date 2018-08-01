@@ -2,6 +2,7 @@ package hsim.checkpoint.setting.controller;
 
 import hsim.checkpoint.config.ValidationConfig;
 import hsim.checkpoint.config.ValidationIntercepterConfig;
+import hsim.checkpoint.config.ValidationResponseFilter;
 import hsim.checkpoint.core.component.ComponentMap;
 import hsim.checkpoint.core.domain.ReqUrl;
 import hsim.checkpoint.core.domain.ValidationData;
@@ -247,5 +248,8 @@ public class MsgSettingController {
     public InitCheckPoint initCheckPoint() {
         return ComponentMap.get(InitCheckPoint.class);
     }
+
+    @Bean
+    public ValidationResponseFilter validationResponseFilter() { return ComponentMap.get(ValidationResponseFilter.class); }
 
 }
