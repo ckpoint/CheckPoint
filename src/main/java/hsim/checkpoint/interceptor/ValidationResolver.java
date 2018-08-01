@@ -20,7 +20,6 @@ import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
 import javax.servlet.http.HttpServletRequest;
-import java.lang.reflect.ParameterizedType;
 import java.util.List;
 
 /**
@@ -79,7 +78,7 @@ public class ValidationResolver implements HandlerMethodArgumentResolver {
             reqBody = ParameterMapper.requestParamaterToObject(basicCheckInfo.getReq(), parameter.getParameterType(), parameter.getParameterAnnotation(ValidationParam.class).charset());
         }
 
-        this.msgChecker.checkRequest(basicCheckInfo, reqBody);
+        this.msgChecker.checkMessage(basicCheckInfo, reqBody);
 
         return reqBody;
     }

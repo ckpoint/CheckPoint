@@ -1,5 +1,6 @@
 package hsim.checkpoint.util;
 
+import hsim.checkpoint.core.annotation.ValidationResponse;
 import hsim.checkpoint.core.component.DetailParam;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
@@ -53,7 +54,7 @@ public class AnnotationScanner {
      * @param annotationClass the annotation class
      * @return the parameter from method with annotation
      */
-    public List<DetailParam> getParameterFromMethodWithAnnotation(Class<?> parentClass, Method method, Class<?> annotationClass) {
+    private List<DetailParam> getParameterFromMethodWithAnnotation(Class parentClass, Method method, Class annotationClass) {
         List<DetailParam> params = new ArrayList<>();
         if (method.getParameterCount() < 1) {
             return params;
@@ -80,7 +81,7 @@ public class AnnotationScanner {
      * @param annotationClass the annotation class
      * @return the parameter from class with annotation
      */
-    public List<DetailParam> getParameterFromClassWithAnnotation(Class<?> baseClass, Class<?> annotationClass) {
+    private List<DetailParam> getParameterFromClassWithAnnotation(Class baseClass, Class annotationClass) {
         List<DetailParam> params = new ArrayList<>();
         Arrays.stream(baseClass.getDeclaredMethods()).forEach(method -> params.addAll(this.getParameterFromMethodWithAnnotation(baseClass, method, annotationClass)));
         return params;
@@ -92,10 +93,43 @@ public class AnnotationScanner {
      * @param annotation the annotation
      * @return the parameter with annotation
      */
-    public List<DetailParam> getParameterWithAnnotation(Class<?> annotation) {
+    public List<DetailParam> getParameterWithAnnotation(Class annotation) {
         List<DetailParam> params = new ArrayList<>();
         this.controllers.stream().forEach(cla -> params.addAll(this.getParameterFromClassWithAnnotation(cla, annotation)));
         return params;
 
+    }
+
+    //return type scan
+
+    private boolean isMethosHasResponseAnnotation(Method method) {
+        if (method.getAnnotation(ValidationResponse.class) != null) {
+            return true;
+        }
+        return method.getReturnType() != null && method.getReturnType().getAnnotation(ValidationResponse.class) != null;
+    }
+
+    private List<DetailParam> getReturnTypesWithControllerClass(Class controller) {
+        List<DetailParam> params = new ArrayList<>();
+        if (controller == null) {
+            return params;
+        }
+
+        List<Method> validationResponseMethods = Arrays.stream(controller.getDeclaredMethods()).filter(this::isMethosHasResponseAnnotation).collect(Collectors.toList());
+
+        validationResponseMethods.forEach(method -> {
+            params.add(new DetailParam(method.getReturnType(), method, controller));
+        });
+        return params;
+    }
+
+    public List<DetailParam> getReturnTypesWithAnnotation(Class annotation) {
+        List<DetailParam> params = new ArrayList<>();
+
+        this.controllers.forEach(controller -> {
+            params.addAll(this.getReturnTypesWithControllerClass(controller));
+        });
+
+        return params;
     }
 }

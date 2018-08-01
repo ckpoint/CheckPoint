@@ -5,10 +5,12 @@ import hsim.checkpoint.core.component.validationRule.type.BaseValidationCheck;
 import hsim.checkpoint.core.component.validationRule.type.BasicCheckRule;
 import hsim.checkpoint.core.component.validationRule.type.StandardValueType;
 import hsim.checkpoint.core.domain.ValidationData;
+import hsim.checkpoint.type.ParamType;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -31,7 +33,16 @@ public class ValidationRule {
     private BaseValidationCheck validationCheck;
 
     private AssistType assistType;
+    private List<ParamType> paramTypes;
 
+
+    private void initParamTypes(ParamType ...paramTypes){
+       if(paramTypes == null || paramTypes.length < 1) {
+           this.paramTypes = Arrays.asList(new ParamType[]{ParamType.BODY, ParamType.QUERY_PARAM});
+       }else{
+           this.paramTypes = Arrays.asList(paramTypes);
+       }
+    }
     /**
      * Instantiates a new Validation rule.
      *
@@ -39,10 +50,12 @@ public class ValidationRule {
      * @param standardValueType the standard value type
      * @param checker           the checker
      */
-    public ValidationRule(BasicCheckRule rule, StandardValueType standardValueType, BaseValidationCheck checker) {
+    public ValidationRule(BasicCheckRule rule, StandardValueType standardValueType, BaseValidationCheck checker, ParamType ...paramType) {
         this.ruleName = rule.name();
         this.standardValueType = standardValueType;
         this.validationCheck = checker;
+
+        this.initParamTypes(paramType);
     }
 
     /**
@@ -52,10 +65,12 @@ public class ValidationRule {
      * @param standardValueType the standard value type
      * @param checker           the checker
      */
-    public ValidationRule(String rName, StandardValueType standardValueType, BaseValidationCheck checker) {
+    public ValidationRule(String rName, StandardValueType standardValueType, BaseValidationCheck checker, ParamType ...paramType) {
         this.ruleName = rName;
         this.standardValueType = standardValueType;
         this.validationCheck = checker;
+
+        this.initParamTypes(paramType);
     }
 
     /**

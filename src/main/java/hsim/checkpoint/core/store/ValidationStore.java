@@ -9,6 +9,7 @@ import hsim.checkpoint.type.ParamType;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -41,6 +42,13 @@ public class ValidationStore {
         return allList.stream().filter(d -> d.getParamType().equals(paramType) && d.equalUrl(reqUrl)).collect(Collectors.toList());
     }
 
+    private void initreqUrl(ReqUrl reqUrl){
+
+        Arrays.stream(ParamType.values()).forEach( paramType->{
+            validationDataRuleListMap.put(paramType.getUniqueKey(reqUrl), this.getMatchedValidaitonRule(paramType, reqUrl));
+        });
+    }
+
     private void validationDataInit() {
 
         allList = this.repository.findAll(false);
@@ -57,10 +65,7 @@ public class ValidationStore {
         allList = allList.stream().filter(vd -> !vd.getValidationRules().isEmpty()).collect(Collectors.toList());
 
         urlMap.entrySet().stream().forEach(entry -> {
-            ReqUrl reqUrl = entry.getValue();
-
-            validationDataRuleListMap.put(ParamType.BODY.getUniqueKey(reqUrl), this.getMatchedValidaitonRule(ParamType.BODY, reqUrl));
-            validationDataRuleListMap.put(ParamType.QUERY_PARAM.getUniqueKey(reqUrl), this.getMatchedValidaitonRule(ParamType.QUERY_PARAM, reqUrl));
+            this.initreqUrl(entry.getValue());
         });
 
     }

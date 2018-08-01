@@ -4,12 +4,14 @@ import hsim.checkpoint.core.component.validationRule.check.*;
 import hsim.checkpoint.core.component.validationRule.replace.ReplaceBase64;
 import hsim.checkpoint.core.component.validationRule.replace.ReplaceDefaultValue;
 import hsim.checkpoint.core.component.validationRule.replace.ReplaceTrim;
+import hsim.checkpoint.core.component.validationRule.response.HiddenField;
 import hsim.checkpoint.core.component.validationRule.rule.AssistType;
 import hsim.checkpoint.core.component.validationRule.rule.ValidationRule;
 import hsim.checkpoint.core.component.validationRule.type.BaseValidationCheck;
 import hsim.checkpoint.core.component.validationRule.type.BasicCheckRule;
 import hsim.checkpoint.core.component.validationRule.type.StandardValueType;
 import hsim.checkpoint.exception.ValidationLibException;
+import hsim.checkpoint.type.ParamType;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
@@ -47,6 +49,8 @@ public class ValidationRuleStore {
         this.addRule(new ValidationRule(BasicCheckRule.Base64, StandardValueType.NONE, new ReplaceBase64()).assistType(new AssistType().string()));
         this.addRule(new ValidationRule(BasicCheckRule.Trim, StandardValueType.NONE, new ReplaceTrim()).assistType(new AssistType().string()));
         this.addRule(new ValidationRule(BasicCheckRule.Pattern, StandardValueType.STRING, new PatternCheck()).assistType(new AssistType().string()));
+
+        this.addRule(new ValidationRule(BasicCheckRule.HiddenField, StandardValueType.NONE, new HiddenField(), ParamType.RESPONSE_BODY).parentDependency().assistType(AssistType.all()));
     }
 
     /**

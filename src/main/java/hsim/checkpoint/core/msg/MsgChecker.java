@@ -70,7 +70,7 @@ public class MsgChecker {
         }
         //replace value
         Object replaceValue = checker.replace(value, standardValue, param);
-        if (replaceValue != null && replaceValue != value) {
+        if (replaceValue != value) {
             param.replaceValue(bodyObj, replaceValue);
         }
     }
@@ -118,7 +118,7 @@ public class MsgChecker {
      * @param basicCheckInfo the basic check info
      * @param bodyObj        the body obj
      */
-    public void checkRequest(BasicCheckInfo basicCheckInfo, Object bodyObj) {
+    public void checkMessage(BasicCheckInfo basicCheckInfo, Object bodyObj) {
         String key = basicCheckInfo.getUniqueKey();
 
         List<ValidationData> checkData = this.validationStore.getValidationDatas(basicCheckInfo.getParamType(), key);
@@ -130,4 +130,6 @@ public class MsgChecker {
             this.checkDataInnerRules(data, bodyObj);
         });
     }
+
+
 }

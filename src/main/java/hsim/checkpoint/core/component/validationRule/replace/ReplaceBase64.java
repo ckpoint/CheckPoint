@@ -22,16 +22,16 @@ public class ReplaceBase64 implements BaseValidationCheck {
     }
 
     @Override
-    public Object replace(Object value, Object standardValue, ValidationData param) {
-        if (value != null && value instanceof String) {
+    public Object replace(Object inputValue, Object standardValue, ValidationData param) {
+        if (inputValue != null && inputValue instanceof String) {
             try {
-                return new String(Base64.getDecoder().decode((String) value), "UTF-8");
+                return new String(Base64.getDecoder().decode((String) inputValue), "UTF-8");
             } catch (UnsupportedEncodingException | IllegalArgumentException e) {
-                log.info("base64 decode fail ( " + param.getName() + " ) :" + value);
-                return value;
+                log.info("base64 decode fail ( " + param.getName() + " ) :" + inputValue);
+                return inputValue;
             }
         }
-        return null;
+        return inputValue;
     }
 
     @Override

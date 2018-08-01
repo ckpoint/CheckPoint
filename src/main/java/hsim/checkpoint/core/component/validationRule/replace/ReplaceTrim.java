@@ -17,12 +17,12 @@ public class ReplaceTrim implements BaseValidationCheck {
     }
 
     @Override
-    public Object replace(Object value, Object standardValue, ValidationData param) {
-        if (value != null && value instanceof String) {
-            String str = (String) value;
+    public Object replace(Object inputValue, Object standardValue, ValidationData param) {
+        if (inputValue != null && inputValue instanceof String) {
+            String str = (String) inputValue;
             return str.trim();
         }
-        return null;
+        return inputValue;
     }
 
     @Override

@@ -34,5 +34,7 @@ public enum BasicCheckRule {
     Trim, /**
      * Pattern basic check rule.
      */
-    Pattern
+    Pattern,
+
+    HiddenField
 }

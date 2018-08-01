@@ -84,7 +84,7 @@ public class ValidationData {
         this.deepLevel = deepLevel;
         this.urlMapping = detailParam.isUrlMapping();
 
-        this.listChild = (parent  != null && ( parent.isList() || parent.listChild));
+        this.listChild = (parent != null && (parent.isList() || parent.listChild));
 
         this.updateField(field);
         this.updateKey(detailParam);
@@ -137,13 +137,12 @@ public class ValidationData {
     public void replaceValue(Object bodyObj, Object replaceValue) {
         Object parentObj = bodyObj;
 
-        if(this.listChild) {
+        if (this.listChild) {
             ValidationData rootListParent = this.findListParent();
-            if(this.deepLevel - rootListParent.deepLevel > 1 ){
+            if (this.deepLevel - rootListParent.deepLevel > 1) {
                 parentObj = this.parent.getValue(bodyObj);
             }
-        }
-        else {
+        } else {
             if (this.parentId != null) {
                 parentObj = this.parent.getValue(bodyObj);
             }
@@ -154,7 +153,7 @@ public class ValidationData {
 
     private Object getter(ValidationData param, Object bodyObj) {
 
-        Method getter = ValidationObjUtil.getGetterMethod(bodyObj.getClass(), param.getName()) ;
+        Method getter = ValidationObjUtil.getGetterMethod(bodyObj.getClass(), param.getName());
 
         if (getter == null) {
             log.error("getter method is null :" + param.getName());
@@ -169,9 +168,12 @@ public class ValidationData {
     }
 
     private boolean isRootParent(ValidationData parent, ValidationData rootParent) {
-        if (parent == null) { return true; }
+        if (parent == null) {
+            return true;
+        }
 
-        if (rootParent == null) { return false;
+        if (rootParent == null) {
+            return false;
         }
         return parent.getId().equals(rootParent.getId());
     }
@@ -230,12 +232,12 @@ public class ValidationData {
      * @param detailParam the detail param
      * @return the boolean
      */
-    public boolean diffKey(DetailParam detailParam){
+    public boolean diffKey(DetailParam detailParam) {
         if (detailParam == null) {
             return false;
         }
 
-        if(!detailParam.getMethodKey().equals(this.methodKey)){
+        if (!detailParam.getMethodKey().equals(this.methodKey)) {
             return true;
         }
 
@@ -314,6 +316,9 @@ public class ValidationData {
         List<ValidationRule> ruleList = new ArrayList<>();
 
         rules.forEach(rule -> {
+            if (!rule.getParamTypes().contains(this.paramType)) {
+                return;
+            }
             ValidationRule existRule = this.getExistRule(rule);
             ruleList.add(existRule != null ? existRule : rule);
         });

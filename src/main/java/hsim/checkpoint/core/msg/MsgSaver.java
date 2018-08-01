@@ -1,8 +1,6 @@
 package hsim.checkpoint.core.msg;
 
 import hsim.checkpoint.config.ValidationConfig;
-import hsim.checkpoint.core.annotation.ValidationBody;
-import hsim.checkpoint.core.annotation.ValidationParam;
 import hsim.checkpoint.core.component.ComponentMap;
 import hsim.checkpoint.core.component.DetailParam;
 import hsim.checkpoint.core.domain.BasicCheckInfo;
@@ -53,7 +51,9 @@ public class MsgSaver {
 
     private void initDetailParams(ParamType paramType, final int maxDeepLevel) {
 
-        List<DetailParam> params = this.annotationScanner.getParameterWithAnnotation(paramType.equals(ParamType.BODY) ? ValidationBody.class : ValidationParam.class);
+        List<DetailParam> params = paramType.equals(ParamType.RESPONSE_BODY) ?
+                this.annotationScanner.getReturnTypesWithAnnotation(paramType.getAnnotationClass())
+                : this.annotationScanner.getParameterWithAnnotation(paramType.getAnnotationClass());
 
         params.forEach(param -> {
             List<ReqUrl> urls = param.getReqUrls();

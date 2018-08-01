@@ -21,9 +21,9 @@ public class ReplaceDefaultValue implements BaseValidationCheck {
     }
 
     @Override
-    public Object replace(Object value, Object standardValue, ValidationData param) {
-        if (value != null && !this.isEmptyString(value)) {
-            return null;
+    public Object replace(Object inputValue, Object standardValue, ValidationData param) {
+        if (inputValue != null && !this.isEmptyString(inputValue)) {
+            return inputValue;
         }
 
         return standardValue;

@@ -3,6 +3,7 @@ package hsim.checkpoint.core.msg;
 import hsim.checkpoint.config.ValidationConfig;
 import hsim.checkpoint.core.annotation.ValidationBody;
 import hsim.checkpoint.core.annotation.ValidationParam;
+import hsim.checkpoint.core.annotation.ValidationResponse;
 import hsim.checkpoint.core.component.ComponentMap;
 import hsim.checkpoint.core.component.DetailParam;
 import hsim.checkpoint.core.domain.ReqUrl;
@@ -53,7 +54,7 @@ public class MethodSyncor {
 
     private void syncMethodKey(ParamType paramType) {
 
-        List<DetailParam> params = this.annotationScanner.getParameterWithAnnotation(paramType.equals(ParamType.BODY) ? ValidationBody.class : ValidationParam.class);
+        List<DetailParam> params = this.annotationScanner.getParameterWithAnnotation(paramType.getAnnotationClass());
 
         params.forEach(param -> {
             List<ReqUrl> urls = param.getReqUrls();

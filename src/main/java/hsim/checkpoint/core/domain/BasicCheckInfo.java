@@ -26,6 +26,12 @@ public class BasicCheckInfo {
     private MethodParameter parameter;
     private String body;
 
+    public BasicCheckInfo(MethodParameter param) {
+        this.parameter = param;
+        this.paramType = ParamType.RESPONSE_BODY;
+        this.detailParam = new DetailParam(parameter.getParameterType(), parameter.getMethod(), null);
+    }
+
     /**
      * Instantiates a new Basic check info.
      *

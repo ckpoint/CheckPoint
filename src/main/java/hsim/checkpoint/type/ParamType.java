@@ -1,25 +1,31 @@
 package hsim.checkpoint.type;
 
+import hsim.checkpoint.core.annotation.ValidationBody;
+import hsim.checkpoint.core.annotation.ValidationParam;
+import hsim.checkpoint.core.annotation.ValidationResponse;
 import hsim.checkpoint.core.domain.ReqUrl;
 import lombok.Getter;
 
 /**
  * The enum Param type.
  */
+@Getter
 public enum ParamType {
     /**
      * Body param type.
      */
-    BODY("@ValidationBody"), /**
+    BODY("@ValidationBody", ValidationBody.class), /**
      * Query param param type.
      */
-    QUERY_PARAM("@ValidationParam");
+    QUERY_PARAM("@ValidationParam", ValidationParam.class),
+    RESPONSE_BODY("@ValidationResponse", ValidationResponse.class);
 
-    @Getter
     private String annotationName;
+    private Class annotationClass;
 
-    ParamType(String aName) {
+    ParamType(String aName, Class aClass) {
         this.annotationName = aName;
+        this.annotationClass = aClass;
     }
 
     /**
